@@ -7,8 +7,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/marcellmartini/devops-tools
+    repoURL: https://github.com/marcellmartini/devops-tools.git
     targetRevision: add-gitops
-    path: gitops/argocd/gitops_folder/1-app
+    path: gitops/argocd/apps/my-app
   destination:
     server: https://kubernetes.default.svc
