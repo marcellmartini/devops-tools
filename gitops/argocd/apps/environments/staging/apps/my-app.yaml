@@ -5,7 +5,7 @@ metadata:
   name: my-app-foo
   namespace: argocd # same namespace as argocd
   finalizers:
-    - resources-finalizer.argocd.argoproj.io
+    - resources-finalizer.argocd.argoproj.io # remove all resources when remove from argocd
 spec:
   project: default
   source:
@@ -19,7 +19,7 @@ spec:
       prune: true
       selfHeal: true
       allowEmpty: false
-    syncOptions:
+    syncOptions: # automatic sync options
       - Validate=true
       - CreateNamespaces=false
       - PrunePropagationPolicy=foregroud
