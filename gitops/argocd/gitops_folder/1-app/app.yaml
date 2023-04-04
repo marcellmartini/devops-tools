@@ -9,6 +9,6 @@ spec:
   source:
     repoURL: https://github.com/marcellmartini/devops-tools
     targetRevision: add-gitops
-    path: gitops/argocd/gitops_folder
+    path: gitops/argocd/gitops_folder/1-app
   destination:
     server: https://kubernetes.default.svc
