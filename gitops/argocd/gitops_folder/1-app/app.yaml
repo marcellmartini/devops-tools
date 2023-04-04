@@ -12,3 +12,13 @@ spec:
     path: gitops/argocd/apps/my-app
   destination:
     server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - Validate=true
+      - CreateNamespaces=false
+      - PrunePropagationPolicy=foregroud
+      - PruneLast=true
