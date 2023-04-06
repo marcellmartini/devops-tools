@@ -4,5 +4,5 @@ kind: Kustomization
 metadata:
   name: arbitrary
 resources:
-  - 0-namespace.yaml
-  - 1-deployment.yaml
+  - namespace.yaml
+  - deployment.yaml
