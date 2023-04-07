@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: marcellmartini/nginx:0.1.2
+          image: marcellmartini/nginx
           resources:
             limits:
               memory: "128Mi"
