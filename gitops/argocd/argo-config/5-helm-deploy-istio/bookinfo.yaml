@@ -1,3 +1,6 @@
+# REF.:
+# * https://istio.io/latest/docs/examples/bookinfo/
+# * https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
