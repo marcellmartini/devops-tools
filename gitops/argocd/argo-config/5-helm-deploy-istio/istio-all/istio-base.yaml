@@ -19,7 +19,7 @@ spec:
       releaseName: my-istio-base
       passCredentials: false
       parameters:
-        - name: "base.defaultRevision"
+        - name: "defaultRevision"
           value: ""
 
   destination:
