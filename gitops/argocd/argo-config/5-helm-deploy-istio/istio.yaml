@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/marcellmartini/devops-tools.git
     targetRevision: add-gitops
-    path: gitops/argocd/apps/environments/dev/istio-all
+    path: gitops/argocd/apps/dev/istio-all
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:

@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/marcellmartini/devops-tools.git
     targetRevision: add-gitops
-    path: gitops/argocd/apps/environments/staging/apps
+    path: gitops/argocd/apps/staging/apps
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:

@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: second-app-bar
+  name: my-app-foo
   namespace: argocd # same namespace as argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io # remove all resources when remove from argocd
@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/marcellmartini/devops-tools.git
     targetRevision: add-gitops
-    path: gitops/argocd/apps/environments/staging/second-app
+    path: gitops/argocd/apps/staging/my-app
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
