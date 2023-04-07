@@ -14,6 +14,7 @@ spec:
     path: gitops/argocd/argo-config/5-helm-deploy-istio/bookinfo-application
   destination:
     server: https://kubernetes.default.svc
+    namespace: default
   syncPolicy:
     automated:
       prune: true
