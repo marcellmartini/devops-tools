@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/marcellmartini/devops-tools.git
     targetRevision: add-gitops
-    path: gitops/argocd/argo-config/5-helm-deploy-istio/istio-all
+    path: gitops/argocd/argo-applications/5-helm-deploy-istio/istio-all
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:

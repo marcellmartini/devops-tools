@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/marcellmartini/devops-tools.git
     targetRevision: add-gitops
-    path: gitops/argocd/argo-config/5-helm-deploy-istio/bookinfo-application
+    path: gitops/argocd/apps/environments/dev/bookinfo-application
   destination:
     server: https://kubernetes.default.svc
     namespace: default
