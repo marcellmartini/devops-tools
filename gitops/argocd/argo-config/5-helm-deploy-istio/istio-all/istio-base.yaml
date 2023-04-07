@@ -19,8 +19,8 @@ spec:
       releaseName: my-istio-base
       passCredentials: false
       parameters:
-        - name: "base.validationURL"
-          value: "https://$remotePilotAddress:15021/validate"
+        - name: "base.failurePolicy"
+          value: "Ignore"
 
   destination:
     server: https://kubernetes.default.svc
