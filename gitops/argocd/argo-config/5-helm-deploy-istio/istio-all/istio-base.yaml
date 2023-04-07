@@ -18,6 +18,10 @@ spec:
       version: v3
       releaseName: my-istio-base
       passCredentials: false
+      parameters:
+        - name: "base.validationURL"
+          value: "https://$remotePilotAddress:15021/validate"
+
   destination:
     server: https://kubernetes.default.svc
     namespace: istio-system
