@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: book-info
+  name: "bookinfo-gateway"
   namespace: argocd # same namespace as argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
