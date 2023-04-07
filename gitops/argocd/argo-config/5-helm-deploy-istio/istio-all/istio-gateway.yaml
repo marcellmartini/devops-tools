@@ -9,7 +9,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
-  project: management
+  project: default
   source:
     repoURL: https://istio-release.storage.googleapis.com/charts
     targetRevision: 1.17.2
