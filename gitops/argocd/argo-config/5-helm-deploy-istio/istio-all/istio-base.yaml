@@ -18,9 +18,6 @@ spec:
       version: v3
       releaseName: my-istio-base
       passCredentials: false
-      values: |
-        defaultArgs:
-        - --create-namespace
   destination:
     server: https://kubernetes.default.svc
     namespace: istio-system

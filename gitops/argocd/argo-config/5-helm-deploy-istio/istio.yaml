@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: my-app-foo
+  name: istio-full
   namespace: argocd # same namespace as argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io # remove all resources when remove from argocd
@@ -21,6 +21,6 @@ spec:
       allowEmpty: false
     syncOptions: # automatic sync options
       - Validate=true
-      - CreateNamespaces=false
+      - CreateNamespaces=true
       - PrunePropagationPolicy=foregroud
       - PruneLast=true

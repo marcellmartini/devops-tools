@@ -18,7 +18,6 @@ spec:
       version: v3
       releaseName: my-istio-gateway
       passCredentials: false
-
   destination:
     server: https://kubernetes.default.svc
     namespace: istio-ingress
