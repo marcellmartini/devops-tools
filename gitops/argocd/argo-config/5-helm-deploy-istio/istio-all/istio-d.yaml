@@ -28,6 +28,6 @@ spec:
       allowEmpty: false
     syncOptions:
       - Validate=true
-      - CreateNamespaces=true
+      - CreateNamespace=true
       - PrunePropagationPolicy=foregroud
       - PruneLast=true
