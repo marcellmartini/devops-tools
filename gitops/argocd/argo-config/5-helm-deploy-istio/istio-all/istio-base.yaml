@@ -19,8 +19,8 @@ spec:
       releaseName: my-istio-base
       passCredentials: false
       parameters:
-        - name: "base.failurePolicy"
-          value: "Fail"
+        - name: "base.defaultRevision"
+          value: ""
 
   destination:
     server: https://kubernetes.default.svc
