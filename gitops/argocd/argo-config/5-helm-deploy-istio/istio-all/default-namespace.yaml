@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: default-namespace
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: ""
+    path: namespace.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    syncOptions:
+      - Validate=true
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foregroud
+      - PruneLast=true
