@@ -63,3 +63,13 @@ resource "kubernetes_labels" "default_namespace" {
     "istio-injection" = "enabled"
   }
 }
+
+resource "kubernetes_namespace" "argocd_namespace" {
+  metadata {
+    name = "argocd"
+
+    labels = {
+      "istio-injection" = "enabled"
+    }
+  }
+}

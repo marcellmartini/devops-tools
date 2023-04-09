@@ -6,3 +6,4 @@ global:
 server:
   extraArgs:
     - --insecure
+#  insecure: true
