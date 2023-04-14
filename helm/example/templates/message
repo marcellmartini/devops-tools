@@ -1,0 +1,3 @@
+---
+# Source: example/templates/message
+This is the most  message: hello helm!
