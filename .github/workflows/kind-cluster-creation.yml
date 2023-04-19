@@ -15,5 +15,5 @@ jobs:
         working-directory: k8s/clusters/kind/test
         run: go mod tidy
       - name: Run Go Tests
-        working-directory: k8s/clusters/kind/test
+        working-directory: ./
         run: make kind-cluster-test
