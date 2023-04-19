@@ -21,7 +21,7 @@ type kindYaml struct {
 	} `yaml:"nodes"`
 }
 
-func (ky *kindYaml) getYaml(path string) *kindYaml {
+func (ky *kindYaml) getConfig(path string) *kindYaml {
 	yf, err := ioutil.ReadFile(path)
 	if err != nil {
 		log.Printf("yamlFile.Get err #%v ", err)
@@ -67,7 +67,7 @@ func TestKindClusterCriation(t *testing.T) {
 	assert.Contains(t, out, "You can now use your cluster with", "kubectl cluster-info --context kind-"+clusterName)
 
 	ky := kindYaml{}
-	ky.getYaml(kindConfigFile)
+	ky.getConfig(kindConfigFile)
 
 	options := k8s.NewKubectlOptions("", "", "default")
 	k8s.WaitUntilAllNodesReady(t, options, 30, 3*time.Second)
