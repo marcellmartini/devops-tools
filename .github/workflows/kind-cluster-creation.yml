@@ -15,5 +15,5 @@ jobs:
         working-directory: k8s/clusters/kind/test
         run: go mod tidy
       - name: Run Go Tests
-        working-directory: k8s/clusters/kind/test
-        run: go test -v -run TestKindClusterCriation -timeout 1m -failfast
+        working-directory: ./
+        run: make kind-cluster-test

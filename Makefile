@@ -18,3 +18,9 @@ kind-cluster-create: kind-install
 .PHONY: kind-cluster-delete
 kind-cluster-delete: kind-install
 	@kind delete cluster --name test
+
+# The idiomatic way to disable test caching explicitly is to use -count=1.
+# Ref.: https://pkg.go.dev/cmd/go@master#hdr-Environment_variables
+.PHONY: kind-cluster-test
+kind-cluster-test:
+	@GOFLAGS="-count=1" go test -v -timeout 10m -failfast ./k8s/clusters/kind/test
