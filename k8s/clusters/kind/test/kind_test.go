@@ -16,9 +16,11 @@ import (
 type kindYaml struct {
 	APIVersion string `yaml:"apiVersion"`
 	Kind       string `yaml:"kind"`
-	Nodes      []struct {
-		Role string `yaml:"role"`
-	} `yaml:"nodes"`
+	Nodes      []node `yaml:"nodes"`
+}
+
+type node struct {
+	Role string `yaml:"role"`
 }
 
 func (ky *kindYaml) getConfig(path string) *kindYaml {

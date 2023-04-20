@@ -1,5 +1,5 @@
 # Why this repo?
-This repo aims to study tools we could use in SRE/DevOps/Platform Engineer jobs.
+This repo aims to study tools that could be used in SRE/DevOps/Platform Engineer jobs.
 
 You could expect each tool that will be studied in this repo will always have the following:
 
@@ -16,6 +16,6 @@ Pre-require necessary:
 
 # The Future
 
-The idea is to implement, not just, but at least the mindmap below:
+The idea is to implement not just but at least the mindmap below:
 
 ![img](assets/images/DevOpsTools.png)
