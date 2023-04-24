@@ -1,7 +1,8 @@
 ---
 - name: Converge
   hosts: all
+  gather_facts: false
   tasks:
-    - name: "Include devops_tools.kind"
+    - name: "Include roles"
       ansible.builtin.include_role:
-        name: "devops_tools.kind"
+        name: "roles"

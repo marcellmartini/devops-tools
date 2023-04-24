@@ -1,0 +1,12 @@
+---
+- name: Get stable kubectl version
+  ansible.builtin.uri:
+    url: https://dl.k8s.io/release/stable.txt
+    body_format:
+  register: kubectl_version
+  when: kubectl_version|length == 0
+
+# tasks file for kind
+- name: Molecule Hello World!
+  ansible.builtin.debug:
+    msg: ${{ kubectl_version }}

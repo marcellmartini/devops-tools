@@ -1,7 +1,7 @@
 galaxy_info:
   author: Marcell Martini
-  namespace: acme
-  description: your role description
+  namespace: devops_tools
+  description: Role responsable for manage cluster Kind.
   company: MM
 
   # If the issue tracker for your role is not on github, uncomment the

@@ -13,6 +13,11 @@ You could expect each tool that will be studied in this repo will always have th
 Pre-require necessary:
 * Go 1.20 or newer
 * Docker 23.0.4 or newer
+* ansible [core 2.14.4]
+* molecule 5.0.0
+  * volecule-vagrant
+* vagrant 2.3.4
+* virtualbox 6.1
 
 # The Future
 

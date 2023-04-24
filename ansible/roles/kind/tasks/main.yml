@@ -1,5 +1,9 @@
 ---
-# tasks file for kind
-- name: Molecule Hello World!
-  ansible.builtin.debug:
-    msg: Hello, World!
+- name: Check required packages needed by the modules
+  include_tasks: packages.yaml
+
+# - include_tasks: install.yml
+#   when: not remove | bool
+
+# - include_tasks: remove.yml
+#   when: remove | bool

@@ -2,13 +2,7 @@
 dependency:
   name: galaxy
 driver:
-  name: vagrant
-  provider:
-    name: virtualbox
-    type: virtualbox
-    options:
-      memory: 4096
-      cpus: 2
+  name: delegated
 platforms:
   - name: instance
 provisioner:
