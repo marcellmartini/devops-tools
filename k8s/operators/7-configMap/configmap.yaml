@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: meu-cm
+data:
+  name: marcell_martini
+  server: nginx

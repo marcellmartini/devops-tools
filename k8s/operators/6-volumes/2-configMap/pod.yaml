@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "500m"
+      ports:
+        - containerPort: 80
+
+      # Buscar apenas uma varialve do ConfigMap
+      # env:
+      #   - name: SERVER
+      #     valueFrom:
+      #       configMapKeyRef:
+      #         name: first-cm
+      #         key: server
+
+      # buscar todas as variaveis do ConfigMap
+      # envFrom:
+      #   - configMapRef:
+      #       name: first-cm
+
+      # Montagem do ConfigMap via Volume
+      volumeMounts:
+        - mountPath: /data
+          name: configmap-volume
+
+  # Montagem do ConfigMap via Volume
+  volumes:
+    - name: configmap-volume
+      configMap:
+        name: first-cm
+        items:
+          - key: server
+            path: meu-tipo-srv.conf
