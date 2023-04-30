@@ -1,4 +1,4 @@
-package test
+package kind
 
 import (
 	"io/ioutil"
@@ -41,7 +41,7 @@ func TestKindClusterCriation(t *testing.T) {
 	t.Parallel()
 
 	clusterName := "test-" + rand.String(8)
-	kindConfigFile := "../kind_cluster.yml"
+	kindConfigFile := "kind_cluster.yml"
 	clusterCreate := shell.Command{
 		Command: "kind",
 		Args: []string{
@@ -65,7 +65,6 @@ func TestKindClusterCriation(t *testing.T) {
 
 	out := shell.RunCommandAndGetOutput(t, clusterCreate)
 	defer shell.RunCommand(t, clusterDelete)
-
 	assert.Contains(t, out, "You can now use your cluster with", "kubectl cluster-info --context kind-"+clusterName)
 
 	ky := kindYaml{}
