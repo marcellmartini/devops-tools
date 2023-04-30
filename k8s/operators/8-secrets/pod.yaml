@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "500m"
+      ports:
+        - containerPort: 80
+
+      # Configura secret especifica
+      # env:
+      #   - name: usuario
+      #     valueFrom:
+      #       secretKeyRef:
+      #         name: minha-senha
+      #         key: user
+
+      # Carrega toda secret que foi definida
+      # envFrom:
+      #   - secretRef:
+      #       name: minha-senha
+
+      # Monta a secret no FS do container
+      # volumeMounts:
+      #   - mountPath: /data
+      #     name: secret-vm
+
+  # Monta a secret no FS do container
+  # volumes:
+  #   - name: secret-vm
+  #     secret:
+  #       secretName: minha-senha
+  #       # Montar apenas a variável escolhida
+  #       items:
+  #         - key: user
+  #           path: user.config
