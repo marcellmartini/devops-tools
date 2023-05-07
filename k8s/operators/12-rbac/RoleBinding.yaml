@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: reader-role
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: leitor2
+subjects:
+  - kind: ServiceAccount
+    name: reader
+    namespace: default
