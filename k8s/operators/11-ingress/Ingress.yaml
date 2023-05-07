@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: NAME
+spec:
+  defaultBackend:
+    service:
+      name: default-svc
+      port:
+        number: 80
+
+  rules:
+    - http:
+        paths:
+          - backend:
+              service:
+                name: foo-svc
+                port:
+                  number: 80
+            path: /foo
+            pathType: Exact
+
+          - backend:
+              service:
+                name: bar-svc
+                port:
+                  number: 80
+            path: /bar
+            pathType: Exact
+
+    - host: bar.com.br
+      http:
+        paths:
+          - backend:
+              service:
+                name: bar-domain-svc
+                port:
+                  number: 80
+            path: /
+            pathType: Exact
