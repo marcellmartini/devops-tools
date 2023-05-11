@@ -1,0 +1,7 @@
+---
+- name: Configure server to Kubernetes
+  gather_facts: true
+  hosts: k8s
+  remote_user: user
+  roles:
+    - kubeadm

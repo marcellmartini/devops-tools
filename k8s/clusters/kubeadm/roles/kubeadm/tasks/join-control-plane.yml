@@ -1,0 +1,14 @@
+################################################################################
+#
+# Control plane join cluster
+#
+################################################################################
+# - name: Get the kubeadm join command from the Kubernetes control plane.
+#   become: true
+#   ansible.builtin.command:
+#     cmd: kubeadm token create --print-join-command
+#   changed_when: false
+#   when: node_role == "cp" and primary == "true"
+#   register: kubeadm_token_cp_create_result
+#   tags:
+#     - cp

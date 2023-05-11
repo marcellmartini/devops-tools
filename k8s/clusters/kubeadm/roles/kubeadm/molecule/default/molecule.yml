@@ -1,0 +1,14 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+platforms:
+  - name: instance
+    box: ubuntu/jammy64
+    memory: 4096
+    cpu: 2
+provisioner:
+  name: ansible
+verifier:
+  name: ansible

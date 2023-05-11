@@ -1,0 +1,55 @@
+---
+################################################################################
+#
+# Default installation
+#
+################################################################################
+- name: Install pre-req to k8s
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - ca-certificates
+    - curl
+    - apt-transport-https
+  tags:
+    - install
+
+- name: Add kubernetes ppa
+  become: true
+  tags:
+    - install
+  block:
+    - name: Download k8s gpg
+      ansible.builtin.get_url:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        dest: /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+        mode: "0644"
+
+    - name: "Add k8s ppa"
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main"
+        state: present
+        update_cache: true
+
+- name: Hold kube{ctl,let,adm} version "{{ k8s_version }}".
+  become: true
+  ansible.builtin.template:
+    src: hold-kube-commands.j2
+    dest: /etc/apt/preferences.d/k8s_hold
+    mode: "0644"
+  tags:
+    - install
+
+- name: Install kube{ctl,let,adm} version "{{ k8s_version }}".
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - kubectl
+    - kubelet
+    - kubeadm
+  tags:
+    - install
