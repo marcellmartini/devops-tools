@@ -1,0 +1,77 @@
+---
+################################################################################
+#
+# Default pre-req configuration
+#
+################################################################################
+- name: Fail play if distro is not ubuntu.
+  become: true
+  ansible.builtin.fail:
+    msg: This role only supports ubuntu.
+  when: ansible_facts['distribution'] == 'Debian'
+  tags:
+    - configure
+
+- name: Check if swap is on
+  become: true
+  ansible.builtin.command: swapon -s
+  register: check_swap
+  changed_when: check_swap.stdout_lines | length > 0
+  tags:
+    - configure
+
+- name: Disable swapp
+  become: true
+  ansible.builtin.command: swapoff -a
+  register: result
+  changed_when: result.rc == 0
+  when: check_swap.stdout_lines | length > 0
+  tags:
+    - configure
+
+- name: Change /etc/fstab
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    search_string: "swap"
+    line: "# swap"
+  when: check_swap.stdout_lines | length > 0
+  tags:
+    - configure
+
+- name: Sistem disable swapp
+  become: true
+  ansible.builtin.systemd:
+    name: swap.target
+    enabled: false
+    masked: true
+  when: check_swap.stdout_lines | length > 0
+  tags:
+    - configure
+
+- name: Apt update
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  tags:
+    - configure
+
+- name: Persist hostname
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/hostname
+    content: "{{ inventory_hostname }}"
+    mode: "0644"
+  tags:
+    - configure
+
+- name: Set hostname
+  become: true
+  ansible.builtin.command:
+    cmd: hostname {{ inventory_hostname }}
+  register: hostname_cmd
+  failed_when: hostname_cmd.rc != 0
+  changed_when: false
+  tags:
+    - configure

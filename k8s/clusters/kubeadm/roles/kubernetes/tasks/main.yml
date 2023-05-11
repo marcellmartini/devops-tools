@@ -1,0 +1,32 @@
+---
+# tasks file for roles
+- name: Pre configure servers
+  ansible.builtin.include_tasks:
+    file: pre-configurations.yml
+  tags:
+    - configure
+
+- name: Install containerd
+  ansible.builtin.include_tasks:
+    file: install-containerd.yml
+  tags:
+    - configure
+
+- name: Install kube commands
+  ansible.builtin.include_tasks:
+    file: install-kube-commands.yml
+  tags:
+    - configure
+
+- name: Init kubernetes
+  ansible.builtin.include_tasks:
+    file: init-kubernetes.yml
+  when: primary == "true"
+  tags:
+    - init
+
+- name: Join nodes
+  ansible.builtin.include_tasks:
+    file: join-nodes.yml
+  tags:
+    - nodes

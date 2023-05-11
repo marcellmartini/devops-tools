@@ -1,0 +1,144 @@
+---
+################################################################################
+#
+# Default installation
+#
+################################################################################
+- name: Persist modules
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/modules-load.d/k8s.conf
+    content: |
+      overlay
+      br_netfilter
+    mode: "0644"
+  tags:
+    - configure
+
+- name: Load modules
+  become: true
+  community.general.modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - overlay
+    - br_netfilter
+  tags:
+    - configure
+
+- name: Persist sysctl params.
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/sysctl.d/k8s.conf
+    content: |
+      net.bridge.bridge-nf-call-iptables  = 1
+      net.bridge.bridge-nf-call-ip6tables = 1
+      net.ipv4.ip_forward                 = 1
+    mode: "0644"
+  tags:
+    - configure
+
+- name: Configure sysctl params.
+  become: true
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "1"
+    state: present
+  loop:
+    - net.bridge.bridge-nf-call-iptables
+    - net.bridge.bridge-nf-call-ip6tables
+    - net.ipv4.ip_forward
+  tags:
+    - configure
+
+- name: Create containerd directory
+  become: true
+  ansible.builtin.file:
+    path: /etc/containerd
+    state: directory
+    mode: "0755"
+  tags:
+    - configure
+
+- name: Install containerd
+  become: true
+  ansible.builtin.apt:
+    name: containerd
+    state: present
+  register: containerd_installed
+  tags:
+    - configure
+
+- name: Check if containerd config file exists
+  become: true
+  ansible.builtin.stat:
+    path: /etc/containerd/config.toml
+  register: config_file_stat
+  tags:
+    - configure
+
+- name: Read existing containerd config file
+  become: true
+  ansible.builtin.slurp:
+    src: /etc/containerd/config.toml
+  register: existing_config_file
+  when: config_file_stat.stat.exists
+  tags:
+    - configure
+
+- name: Generate containerd default config
+  become: true
+  ansible.builtin.command: containerd config default
+  register: containerd_default_config
+  changed_when: containerd_default_config.failed
+  tags:
+    - configure
+
+- name: Set existing config file content
+  become: true
+  ansible.builtin.set_fact:
+    existing_config_file_content: "{{ existing_config_file.content | b64decode }}"
+  when: config_file_stat.stat.exists
+  tags:
+    - configure
+
+- name: Set SystemdCgroup to true
+  become: true
+  ansible.builtin.set_fact:
+    existing_config_file_content: "{{ existing_config_file_content | replace('SystemdCgroup = false', 'SystemdCgroup = true') }}"
+  when: config_file_stat.stat.exists
+  tags:
+    - configure
+
+- name: Set facts if file dont exist
+  become: true
+  ansible.builtin.set_fact:
+    existing_config_file_content: ""
+  when: not config_file_stat.stat.exists
+  tags:
+    - configure
+
+- name: Set SystemdCgroup to true when file not exist
+  become: true
+  ansible.builtin.set_fact:
+    existing_config_file_content: "{{ containerd_default_config.stdout | replace('SystemdCgroup = false', 'SystemdCgroup = true') }}"
+  when: not config_file_stat.stat.exists
+  tags:
+    - configure
+
+- name: Write containerd default config to file
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/containerd/config.toml
+    content: "{{ existing_config_file_content }}"
+    mode: "0644"
+  notify: Restart containerd
+  when: existing_config_file_content != containerd_default_config.stdout
+  tags:
+    - configure
+
+- name: Restart containerd
+  become: true
+  ansible.builtin.meta: flush_handlers
+  tags:
+    - configure

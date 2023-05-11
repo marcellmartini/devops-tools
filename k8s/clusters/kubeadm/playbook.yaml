@@ -1,0 +1,7 @@
+---
+- name: Configure Kubernetes cluster
+  gather_facts: true
+  hosts: k8s
+  remote_user: user
+  roles:
+    - kubernetes

@@ -1,0 +1,11 @@
+---
+# defaults file for teste
+k8s_version: "1.26.4"
+k8s_cni: "weave"
+weave_net_upgrade: "false"
+weave_net_url: "https://github.com/weaveworks/weave/releases/download/v{{ weave_net_version }}/weave-daemonset-k8s.yaml"
+weave_net_version: "2.8.1"
+weave_net_yaml_path: "/tmp/weave_net.yaml"
+hostname: ""
+node_role: "node"
+primary: "false"

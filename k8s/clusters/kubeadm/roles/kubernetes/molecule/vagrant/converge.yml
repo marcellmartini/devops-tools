@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: k8s
+  remote_user: user
+  tasks:
+    - name: "Install kubernetes"
+      ansible.builtin.include_role:
+        name: "kubernetes"

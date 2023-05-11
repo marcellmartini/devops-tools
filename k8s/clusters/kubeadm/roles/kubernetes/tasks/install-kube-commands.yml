@@ -1,0 +1,72 @@
+---
+################################################################################
+#
+# Default installation
+#
+################################################################################
+- name: Install pre-req to k8s
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - ca-certificates
+    - curl
+    - apt-transport-https
+  tags:
+    - configure
+
+- name: Add kubernetes ppa
+  become: true
+  tags:
+    - configure
+  block:
+    - name: Download k8s gpg
+      ansible.builtin.shell:
+        executable: /bin/bash
+        cmd: |
+          set -o pipefail
+          curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg |
+          gpg --dearmor |
+          sudo tee /usr/share/keyrings/kubernetes-archive-keyring.gpg >/dev/null
+      changed_when: false
+
+    - name: "Add k8s ppa"
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main"
+        state: present
+        update_cache: true
+
+- name: Hold kube{ctl,let,adm} version "{{ k8s_version }}".
+  become: true
+  ansible.builtin.template:
+    src: hold-kube-commands.j2
+    dest: /etc/apt/preferences.d/k8s_hold
+    mode: "0644"
+  tags:
+    - configure
+
+- name: Wait until dpkg file lock is free.
+  become: true
+  ansible.builtin.command:
+    cmd: fuser /var/lib/dpkg/lock-frontend
+  register: file_lock_status
+  until: file_lock_status.rc == 1
+  failed_when: file_lock_status.rc == 0
+  changed_when: false
+  retries: 12
+  delay: 5
+  tags:
+    - configure
+
+- name: Install kube{ctl,let,adm} version "{{ k8s_version }}".
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - kubectl
+    - kubelet
+    - kubeadm
+  tags:
+    - configure
