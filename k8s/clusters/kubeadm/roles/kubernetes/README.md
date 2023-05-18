@@ -21,7 +21,8 @@ To run this `role` the inventory must at least have:
 
 With this configuration, the `role` will configure a Kubernetes with no workers and only one node as the control plane.
 
-Below is the minimum `host` file configuration needed to run the role:
+The `inventory` file example below is the minimum configuration to run the role:
+
 ```ini
 [k8s:children]
 cp
@@ -53,7 +54,7 @@ Exemple of playbook:
     - kubernetes
 ```
 
-And run the command below:
+Run command:
 ```bash
 $ ansible-playbook -i hosts.ini playbook.yaml
 ```
@@ -95,17 +96,31 @@ The `init` tag initiates a Kubernetes cluster in the node where the `primary=tru
 
 The `nodes` tag joins the nodes in the Kubernetes cluster that was initiated on the `primary=true` node.
 
+You can use this role with the following behavior:
+* Just configure all nodes.
+```bash
+$ ansible-playbook -i hosts.ini playbook.yaml --tags configure
+```
+
+* Create a cluster with one control-plane node only.
+```bash
+$ ansible-playbook -i hosts.ini playbook.yaml --tags configure,init
+```
+
+* Create a cluster with nodes.
+```bash
+$ ansible-playbook -i hosts.ini playbook.yaml
+```
+
+* Join a new node to the existing cluster.
+```bash
+$ ansible-playbook -i hosts.ini playbook.yaml --tags configure, node
+```
 
 Example Playbook
 ----------------
 
-You can use this role with the following ways:
-* Just configure all nodes (--tags configure)
-* Create a cluster with only one control plane node (--tags configure,init)
-* Create a cluster with nodes (without --tags)
-* Join a new node to the cluster (--tags configure, node)
-
-The host file example will create a Kubernetes cluster with one control plane and four nodes:
+hosts.ini:
 ```ini
 [k8s:children]
 cp
@@ -131,7 +146,7 @@ node_role=node
 
 ```
 
-Playbook.yml example:
+playbook.yml:
 ```yaml
 ---
 - name: Configure Kubernetes cluster
@@ -141,6 +156,12 @@ Playbook.yml example:
   roles:
     - kubernetes
 ```
+Run the playbook:
+```bash
+$ ansible-playbook -i hosts.ini playbook.yaml
+```
+
+With the examples above, this role will create a Kubernetes cluster with one control plane node and four worker nodes:
 
 TODO
 ----
@@ -152,10 +173,7 @@ TODO
 * Clean up
 * Remove the node
 * Clean up the control plane
-* kubeadm's skew against the Kubernetes version
-* kubeadm's skew against the kubelet
-* kubeadm's skew against kubeadm
-
+* Upgarde the cluster against the [version skew policy][vsp]
 
 License
 -------
@@ -168,3 +186,4 @@ Author Information
 [Marcell Martini][marcellmartini] is an experienced DevOps/SRE who worked in a production Kubernetes created at AWS.
 
 [marcellmartini]:https://marcellmartini.dev
+[vsp]:https://kubernetes.io/releases/version-skew-policy/
