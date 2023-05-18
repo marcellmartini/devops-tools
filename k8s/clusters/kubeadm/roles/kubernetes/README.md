@@ -9,6 +9,8 @@ It's make all the steps bellow:
 * Install a Pod network add-on (weave net)
 * Joining nodes to cluster
 
+This role is intended to create a Kubernetes cluster in a Ubuntu 22.04 server.
+
 Requirements
 ------------
 
