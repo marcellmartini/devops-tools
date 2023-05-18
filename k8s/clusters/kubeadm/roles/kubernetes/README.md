@@ -97,7 +97,7 @@ The `nodes` tag joins the nodes in the Kubernetes cluster that was initiated on 
 Example Playbook
 ----------------
 
-You can use this role with the follow ways:
+You can use this role with the following ways:
 * Just configure all nodes (--tags configure)
 * Create a cluster with only one control plane node (--tags configure,init)
 * Create a cluster with nodes (without --tags)
