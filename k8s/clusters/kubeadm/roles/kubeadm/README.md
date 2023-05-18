@@ -6,14 +6,14 @@ Role to manage a Kubernetes cluster.
 Requirements
 ------------
 
-To run this `role` the inventory must have at least:
+To run this `role` the inventory must at least have:
 * One server in `[cp]` group;
-* The variable `primary=true` must have to be set.
-* The variable `hostname` must have to be set.
+* The `primary=true` variable must be set on the server.
+* The `hostname` variable must be set on the server.
 
-With this configuration, the role will configure a Kubernetes with no workers and one server as the control plane.
+With this configuration, the `role` will configure a Kubernetes with no workers and only one server as the control plane.
 
-The configuration below shows the minimum host file configuration needed to run the role:
+Below is the minimum `host` file configuration needed to run the role:
 ```ini
 [k8s:children]
 cp
@@ -23,7 +23,7 @@ nodes
 primary=false
 
 [cp]
-192.168.1.253 hostname=cp1 primary=true
+<hostname_or_ip> hostname=cp1 primary=true
 
 [cp:vars]
 node_role=cp
