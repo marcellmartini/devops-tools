@@ -62,6 +62,8 @@ In tags sections I'll talk about other options to run the command.
 
 Role Variables
 --------------
+Variables in `defaults/main.yml`:
+
 |         TAG         |                                               Default Value                                               |                         Explanation                          |
 | :-----------------: | :-------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------: |
 |     k8s_version     |                                                 "1.26.4"                                                  |   The version of Kubernetes cluster that will be created.    |
@@ -74,8 +76,6 @@ Role Variables
 |      node_role      |                                                  "node"                                                   |                      Default node role                       |
 |       primary       |                                                  "false"                                                  |        Indicate what node is a primary control-plane         |
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
-
 Dependencies
 ------------
 
@@ -83,7 +83,7 @@ There is no dependence on roles hosted on Galaxy. This role only uses built-in m
 
 TAGS
 ----------------
-This role have the follow tags:
+To control the behavior of this role, we have the following tags:
 
 * configure
 * init
