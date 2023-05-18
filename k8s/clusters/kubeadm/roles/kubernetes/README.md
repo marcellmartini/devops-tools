@@ -4,10 +4,10 @@ Kubernetes role
 The objective of this role is to create a Kubernetes cluster using kubeadm, install the containerd as a container runtime and weave net as Pod network add-on.
 
 It's make all the steps bellow:
-* Preparing the hosts
-* Initializing your control-plane node
+* Prepare the hosts
+* Initialize your control-plane node
 * Install a Pod network add-on (weave net)
-* Joining your nodes
+* Joining nodes to cluster
 
 Requirements
 ------------
