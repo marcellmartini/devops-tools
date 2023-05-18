@@ -3,7 +3,7 @@
 # Node join cluster
 #
 ################################################################################
-- name: Get the kubeadm join command from the Kubernetes control plane.
+- name: Get the kubeadm join command from the Kubernetes control-plane.
   become: true
   ansible.builtin.command:
     cmd: kubeadm token create --print-join-command

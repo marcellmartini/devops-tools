@@ -1,6 +1,6 @@
 ################################################################################
 #
-# Control plane initial installation
+# Control-plane initial installation
 #
 ################################################################################
 - name: Check if kubernetes config file exists
@@ -68,7 +68,6 @@
   when: weave_net_upgrade == "true"
   tags:
     - init
-
 
 - name: Get weave_net yaml
   ansible.builtin.uri:
