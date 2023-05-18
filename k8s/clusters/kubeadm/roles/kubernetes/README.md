@@ -143,6 +143,8 @@ Playbook.yml example:
 TODO
 ----
 
+* Create Molecule tests.
+* Configure Github Actions to test the role.
 * Create a load balancer.
 * Create a cluster with multinode control plane.
 * Clean up
@@ -151,7 +153,6 @@ TODO
 * kubeadm's skew against the Kubernetes version
 * kubeadm's skew against the kubelet
 * kubeadm's skew against kubeadm
-Platform compatibility
 
 
 License
