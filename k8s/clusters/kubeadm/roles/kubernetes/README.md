@@ -1,7 +1,13 @@
-Role Name
+Kubernetes role
 =========
 
-Role to manage a Kubernetes cluster.
+The objective of this role is to create a Kubernetes cluster using kubeadm, install the containerd as a container runtime and weave net as CNI.
+
+It's make all the steps bellow:
+* Preparing the hosts
+* Initializing your control-plane node
+* Install a Pod network add-on (weave net)
+* Joining your nodes
 
 Requirements
 ------------
@@ -139,6 +145,14 @@ TODO
 
 * Create a load balancer.
 * Create a cluster with multinode control plane.
+* Clean up
+* Remove the node
+* Clean up the control plane
+* kubeadm's skew against the Kubernetes version
+* kubeadm's skew against the kubelet
+* kubeadm's skew against kubeadm
+Platform compatibility
+
 
 License
 -------
