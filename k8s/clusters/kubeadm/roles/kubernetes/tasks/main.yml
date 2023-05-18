@@ -4,19 +4,19 @@
   ansible.builtin.include_tasks:
     file: pre-configurations.yml
   tags:
-    - install
+    - configure
 
 - name: Install containerd
   ansible.builtin.include_tasks:
     file: install-containerd.yml
   tags:
-    - install
+    - configure
 
 - name: Install kube commands
   ansible.builtin.include_tasks:
     file: install-kube-commands.yml
   tags:
-    - install
+    - configure
 
 - name: Init kubernetes
   ansible.builtin.include_tasks:

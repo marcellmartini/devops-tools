@@ -4,4 +4,4 @@
   hosts: k8s
   remote_user: user
   roles:
-    - kubeadm
+    - kubernetes

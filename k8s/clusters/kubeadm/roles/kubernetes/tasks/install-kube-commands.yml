@@ -14,12 +14,12 @@
     - curl
     - apt-transport-https
   tags:
-    - install
+    - configure
 
 - name: Add kubernetes ppa
   become: true
   tags:
-    - install
+    - configure
   block:
     - name: Download k8s gpg
       ansible.builtin.get_url:
@@ -40,7 +40,7 @@
     dest: /etc/apt/preferences.d/k8s_hold
     mode: "0644"
   tags:
-    - install
+    - configure
 
 - name: Install kube{ctl,let,adm} version "{{ k8s_version }}".
   become: true
@@ -52,4 +52,4 @@
     - kubelet
     - kubeadm
   tags:
-    - install
+    - configure

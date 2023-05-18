@@ -13,7 +13,7 @@
       br_netfilter
     mode: "0644"
   tags:
-    - install
+    - configure
 
 - name: Load modules
   become: true
@@ -24,7 +24,7 @@
     - overlay
     - br_netfilter
   tags:
-    - install
+    - configure
 
 - name: Persist sysctl params.
   become: true
@@ -36,7 +36,7 @@
       net.ipv4.ip_forward                 = 1
     mode: "0644"
   tags:
-    - install
+    - configure
 
 - name: Configure sysctl params.
   become: true
@@ -49,7 +49,7 @@
     - net.bridge.bridge-nf-call-ip6tables
     - net.ipv4.ip_forward
   tags:
-    - install
+    - configure
 
 - name: Create containerd directory
   become: true
@@ -58,7 +58,7 @@
     state: directory
     mode: "0755"
   tags:
-    - install
+    - configure
 
 - name: Install containerd
   become: true
@@ -67,7 +67,7 @@
     state: present
   register: containerd_installed
   tags:
-    - install
+    - configure
 
 - name: Check if containerd config file exists
   become: true
@@ -75,7 +75,7 @@
     path: /etc/containerd/config.toml
   register: config_file_stat
   tags:
-    - install
+    - configure
 
 - name: Read existing containerd config file
   become: true
@@ -84,7 +84,7 @@
   register: existing_config_file
   when: config_file_stat.stat.exists
   tags:
-    - install
+    - configure
 
 - name: Generate containerd default config
   become: true
@@ -92,7 +92,7 @@
   register: containerd_default_config
   changed_when: containerd_default_config.failed
   tags:
-    - install
+    - configure
 
 - name: Set existing config file content
   become: true
@@ -100,7 +100,7 @@
     existing_config_file_content: "{{ existing_config_file.content | b64decode }}"
   when: config_file_stat.stat.exists
   tags:
-    - install
+    - configure
 
 - name: Set SystemdCgroup to true
   become: true
@@ -108,7 +108,7 @@
     existing_config_file_content: "{{ existing_config_file_content | replace('SystemdCgroup = false', 'SystemdCgroup = true') }}"
   when: config_file_stat.stat.exists
   tags:
-    - install
+    - configure
 
 - name: Set facts if file dont exist
   become: true
@@ -116,7 +116,7 @@
     existing_config_file_content: ""
   when: not config_file_stat.stat.exists
   tags:
-    - install
+    - configure
 
 - name: Set SystemdCgroup to true when file not exist
   become: true
@@ -124,7 +124,7 @@
     existing_config_file_content: "{{ containerd_default_config.stdout | replace('SystemdCgroup = false', 'SystemdCgroup = true') }}"
   when: not config_file_stat.stat.exists
   tags:
-    - install
+    - configure
 
 - name: Write containerd default config to file
   become: true
@@ -135,10 +135,10 @@
   notify: Restart containerd
   when: existing_config_file_content != containerd_default_config.stdout
   tags:
-    - install
+    - configure
 
 - name: Restart containerd
   become: true
   ansible.builtin.meta: flush_handlers
   tags:
-    - install
+    - configure

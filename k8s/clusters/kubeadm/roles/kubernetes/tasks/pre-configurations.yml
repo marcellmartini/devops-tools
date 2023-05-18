@@ -10,7 +10,7 @@
     msg: This role only supports ubuntu.
   when: ansible_facts['distribution'] == 'Debian'
   tags:
-    - install
+    - configure
 
 - name: Check if swap is on
   become: true
@@ -18,7 +18,7 @@
   register: check_swap
   changed_when: check_swap.stdout_lines | length > 0
   tags:
-    - install
+    - configure
 
 - name: Disable swapp
   become: true
@@ -27,7 +27,7 @@
   changed_when: result.rc == 0
   when: check_swap.stdout_lines | length > 0
   tags:
-    - install
+    - configure
 
 - name: Change /etc/fstab
   become: true
@@ -37,7 +37,7 @@
     line: "# swap"
   when: check_swap.stdout_lines | length > 0
   tags:
-    - install
+    - configure
 
 - name: Sistem disable swapp
   become: true
@@ -47,7 +47,7 @@
     masked: true
   when: check_swap.stdout_lines | length > 0
   tags:
-    - install
+    - configure
 
 - name: Apt update
   become: true
@@ -55,7 +55,7 @@
     update_cache: true
     cache_valid_time: 3600
   tags:
-    - install
+    - configure
 
 - name: Persist hostname
   become: true
@@ -64,7 +64,7 @@
     content: "{{ hostname }}"
     mode: "0644"
   tags:
-    - install
+    - configure
 
 - name: Set hostname
   become: true
@@ -73,4 +73,4 @@
   register: hostname_cmd
   changed_when: hostname_cmd.rc != 0
   tags:
-    - install
+    - configure

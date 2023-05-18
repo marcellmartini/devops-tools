@@ -1,8 +1,8 @@
 ---
 galaxy_info:
   author: Marcell Martini
-  namespace: kubeadm
-  description: Create cluster with kubeadm
+  namespace: kubernetes
+  description: Create a cluster Kubernetes with kubeadm
   company: MM
 
   # If the issue tracker for your role is not on github, uncomment the
