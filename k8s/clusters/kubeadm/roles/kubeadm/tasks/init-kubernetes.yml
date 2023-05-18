@@ -3,15 +3,6 @@
 # Control plane initial installation
 #
 ################################################################################
-# - name: Check qnt of control plane
-#   become: true
-#   ansible.builtin.set_fact:
-#     kubeadm_init_cmd: >
-#       {{ kubeadm_init_base }}
-#       {{ kubeadm_ha_options }}
-#   tag:
-#     - init
-
 - name: Check if kubernetes config file exists
   become: true
   ansible.builtin.stat:
@@ -58,6 +49,6 @@
   register: install_cni_weave
   changed_when: "'created' in install_cni_weave.stdout"
   failed_when: install_cni_weave.rc != 0
-  when: primary == "true"
+  when: primary == "true" and k8s_cni == "weave"
   tags:
     - init
