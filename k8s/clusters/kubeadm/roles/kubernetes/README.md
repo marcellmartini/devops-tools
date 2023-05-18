@@ -66,7 +66,7 @@ Role Variables
 |       k8s_cni       |                                                  "weave"                                                  |    The CNI that will be installed in Kubernetes cluster.     |
 |  weave_net_upgrade  |                                                  "false"                                                  | Inform is want to upgrade the wave_net to the latest version |
 |    weave_net_url    | "https://github.com/weaveworks/weave/releases/download/v{{ weave_net_version }}/weave-daemonset-k8s.yaml" |   The yaml of weave that will be used to install weave net   |
-|  weave_net_version  |                                                 "v2.8.1"                                                  |        The version of wave net that will be installed        |
+|  weave_net_version  |                                                  "2.8.1"                                                  |        The version of wave net that will be installed        |
 | weave_net_yaml_path |                                           "/tmp/weave_net.yaml"                                           |         The place where weave_net.yaml will be saved         |
 |      hostname       |                                                    ""                                                     |                           Hostname                           |
 |      node_role      |                                                  "node"                                                   |                      Default node role                       |
