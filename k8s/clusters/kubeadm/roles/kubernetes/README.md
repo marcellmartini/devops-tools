@@ -1,3 +1,6 @@
+Index
+=====
+- [Index](#index)
 - [Kubernetes role](#kubernetes-role)
   - [Requirements](#requirements)
   - [Role Variables](#role-variables)
