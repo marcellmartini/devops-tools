@@ -1,7 +1,7 @@
 Kubernetes role
 =========
 
-The objective of this role is to create a Kubernetes cluster using kubeadm, install the containerd as a container runtime and weave net as CNI.
+The objective of this role is to create a Kubernetes cluster using kubeadm, install the containerd as a container runtime and weave net as Pod network add-on.
 
 It's make all the steps bellow:
 * Preparing the hosts
