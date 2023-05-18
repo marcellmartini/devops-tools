@@ -1,8 +1,7 @@
 ---
 # defaults file for teste
 k8s_version: ""
+k8s_cni: "weave"
 weave_net_yaml: https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
 hostname: ""
 primary: "false"
-kubeadm_init_base: "kubeadm init"
-kubeadm_ha_options: ""
