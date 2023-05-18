@@ -1,5 +1,5 @@
 ---
-- name: Configure server to Kubernetes
+- name: Configure Kubernetes cluster
   gather_facts: true
   hosts: k8s
   remote_user: user
