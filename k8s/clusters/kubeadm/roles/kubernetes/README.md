@@ -1,3 +1,13 @@
+- [Kubernetes role](#kubernetes-role)
+  - [Requirements](#requirements)
+  - [Role Variables](#role-variables)
+  - [Dependencies](#dependencies)
+  - [TAGS](#tags)
+  - [Example Playbook](#example-playbook)
+  - [TODO](#todo)
+  - [License](#license)
+  - [Author Information](#author-information)
+
 Kubernetes role
 =========
 
