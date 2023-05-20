@@ -21,6 +21,7 @@
 - name: Init kubernetes
   ansible.builtin.include_tasks:
     file: init-kubernetes.yml
+  when: primary == "true"
   tags:
     - init
 
