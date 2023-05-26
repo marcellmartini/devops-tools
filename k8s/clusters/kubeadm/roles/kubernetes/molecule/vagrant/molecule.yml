@@ -1,0 +1,83 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: vagrant
+
+platforms:
+  - name: cp1
+    box: ubuntu/jammy64
+    memory: 4096
+    cpu: 2
+    groups:
+      - k8s
+    children:
+      - cp
+
+  - name: node1
+    box: ubuntu/jammy64
+    memory: 4096
+    cpu: 2
+    groups:
+      - k8s
+    children:
+      - nodes
+
+  - name: node2
+    box: ubuntu/jammy64
+    memory: 4096
+    cpu: 2
+    groups:
+      - k8s
+    children:
+      - nodes
+
+  - name: node3
+    box: ubuntu/jammy64
+    memory: 4096
+    cpu: 2
+    groups:
+      - k8s
+    children:
+      - nodes
+
+  - name: node4
+    box: ubuntu/jammy64
+    memory: 4096
+    cpu: 2
+    groups:
+      - k8s
+    children:
+      - nodes
+
+provisioner:
+  name: ansible
+  inventory:
+    host_vars:
+      cp1:
+        primary: "true"
+        hostname: "cp1"
+      node1:
+        hostname: "node1"
+      node2:
+        hostname: "node2"
+      node3:
+        hostname: "node3"
+      node4:
+        hostname: "node4"
+    # other way to set variables:
+    # host_vars/cp1.yaml <- file with variables of cp1 host
+    #
+    # links:
+    #   host_vars: host_vars/
+    group_vars:
+      k8s:
+        primary: "false"
+      cp:
+        node_role: cp
+      nodes:
+        node_role: node
+
+verifier:
+  name: ansible
