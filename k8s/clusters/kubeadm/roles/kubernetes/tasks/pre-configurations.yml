@@ -63,6 +63,7 @@
     dest: /etc/hostname
     content: "{{ hostname }}"
     mode: "0644"
+  failed_when: hostname == ""
   tags:
     - configure
 
@@ -72,5 +73,6 @@
     cmd: hostname {{ hostname }}
   register: hostname_cmd
   changed_when: hostname_cmd.rc != 0
+  failed_when: hostname == ""
   tags:
     - configure
