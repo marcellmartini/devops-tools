@@ -61,18 +61,17 @@
   become: true
   ansible.builtin.copy:
     dest: /etc/hostname
-    content: "{{ hostname }}"
+    content: "{{ inventory_hostname }}"
     mode: "0644"
-  failed_when: hostname == ""
   tags:
     - configure
 
 - name: Set hostname
   become: true
   ansible.builtin.command:
-    cmd: hostname {{ hostname }}
+    cmd: hostname {{ inventory_hostname }}
   register: hostname_cmd
-  changed_when: hostname_cmd.rc != 0
-  failed_when: hostname == ""
+  failed_when: hostname_cmd.rc != 0
+  changed_when: false
   tags:
     - configure
