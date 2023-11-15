@@ -1,8 +1,8 @@
 package test
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 	"testing"
 	"time"
 
@@ -24,7 +24,7 @@ type node struct {
 }
 
 func (ky *kindYaml) getConfig(path string) *kindYaml {
-	yf, err := ioutil.ReadFile(path)
+	yf, err := os.ReadFile(path)
 	if err != nil {
 		log.Printf("yamlFile.Get err #%v ", err)
 	}
