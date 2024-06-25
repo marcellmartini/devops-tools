@@ -14,6 +14,12 @@ Pre-require necessary:
 * Go 1.20 or newer
 * Docker 23.0.4 or newer
 
+# Parts of this repo
+
+## Ingresses
+
+* [Nginx](./ingress/nginx/)
+
 # The Future
 
 The idea is to implement not just but at least the mindmap below:
