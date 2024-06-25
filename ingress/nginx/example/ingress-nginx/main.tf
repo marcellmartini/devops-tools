@@ -5,6 +5,11 @@ module "ingress" {
     {
       name  = "controller.service.type"
       value = "NodePort"
+    },
+    {
+      name  = "controller.extraArgs.enable-ssl-passthrough"
+      value = "true"
+
     }
   ]
 }
