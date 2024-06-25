@@ -1,0 +1,30 @@
+# REF.:
+# * https://istio.io/latest/docs/examples/bookinfo/
+# * https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bookinfo-full
+  namespace: argocd # same namespace as argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io # remove all resources when remove from argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/marcellmartini/devops-tools.git
+    targetRevision: add-gitops
+    path: gitops/argocd/apps/dev/bookinfo-application
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions: # automatic sync options
+      - Validate=true
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foregroud
+      - PruneLast=true

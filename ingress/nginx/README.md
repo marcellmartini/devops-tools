@@ -9,9 +9,14 @@
 
 ## Install
 
-```shell
-minikube start --nodes 4
+### Create a cluster 
 
+Create a cluster k8s with any tool. You'll find docs to create a cluster with
+some tools in [clusters](../../k8s/clusters/) directory.
+
+### Install the nginx ingress
+
+```shell
 tofu -chdir=terraform init
 
 tofu -chdir=terraform plan
