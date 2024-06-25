@@ -1,0 +1,7 @@
+---
+namespace: metallb-system
+
+resources:
+  - https://raw.githubusercontent.com/metallb/metallb/v0.14.8/config/manifests/metallb-native.yaml
+  - ippool.yml
+  - l2advertisement.yaml
