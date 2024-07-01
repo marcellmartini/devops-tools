@@ -17,11 +17,13 @@ some tools in [clusters](../../k8s/clusters/) directory.
 ### Install the nginx ingress
 
 ```shell
-tofu -chdir=terraform init
+INGRESS_DIR="./terraform/example/ingress-nginx"
 
-tofu -chdir=terraform plan
+tofu -chdir="${INGRESS_DIR}" init
 
-tofu -chdir=terraform apply
+tofu -chdir="${INGRESS_DIR}" plan
+
+tofu -chdir="${INGRESS_DIR}" apply
 ```
  
 ## Test instalation
@@ -79,7 +81,7 @@ helm show values ingress-nginx --repo https://kubernetes.github.io/ingress-nginx
 ## Clean UP
 
 ```shell
-tofu -chdir=terraform destroy
+tofu -chdir="${INGRESS_DIR}" destroy
 
 minikube delete
 ```

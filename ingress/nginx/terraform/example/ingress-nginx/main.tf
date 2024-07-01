@@ -1,5 +1,5 @@
 module "ingress" {
-    source = "./module" 
+    source = "../../module" 
 
     # Uncomment the line below if you have a LoadBalancer
     # configured in your cluster

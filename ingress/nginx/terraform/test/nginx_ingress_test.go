@@ -14,7 +14,7 @@ func TestNginxIngress(t *testing.T) {
 	// install nginx-ingress using terraform
 	//
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../",
+		TerraformDir: "../example/ingress-nginx",
 	})
 
 	terraform.InitAndApply(t, terraformOptions)
