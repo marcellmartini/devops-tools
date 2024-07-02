@@ -2,45 +2,54 @@
 
 ## Required Commands
 
-1. minikube
-2. kubectl
-3. tofu
-4. jq
+1. [minikube](https://minikube.sigs.k8s.io/docs/start/)
+2. [kubectl](https://kubernetes.io/docs/tasks/tools/)
+3. [OpenTofu](https://opentofu.org/docs/intro/install/)
+4. [jq](https://jqlang.github.io/jq/download/)
 
 ## Install
 
+### Create a cluster 
+
+Create a Kubernetes cluster using any tool. You'll find documentation to create 
+a cluster with some tools in the [clusters](../../k8s/clusters/) directory.
+
+### Install the nginx ingress
+
 ```shell
-minikube start --nodes 4
+export INGRESS_DIR="./terraform/example/ingress-nginx"
 
-tofu -chdir=terraform init
+tofu -chdir="${INGRESS_DIR}" init
 
-tofu -chdir=terraform plan
+tofu -chdir="${INGRESS_DIR}" plan
 
-tofu -chdir=terraform apply
+tofu -chdir="${INGRESS_DIR}" apply
 ```
  
 ## Test instalation
 
+### Using terratest 
+
+Run the command below:
+
 ```shell
-export NODE_PORT=$(kubectl get svc \
-    -n ingress-nginx ingress-nginx-controller \
-    -o json |
-    jq '.spec.ports[] |
-        select(.name == "http") |
-        .nodePort')
-
-export HOST_IP="$(minikube ip)"
-
-sed -e "s@<cluster_ip>@${HOST_IP}@g" ./terraform/example/03-ingress.yml |
-  tee ./terraform/example/03-ingress.yml
-
-kubectl apply -f ./terraform/example
-
-curl http://nginx.${HOST_IP}.nip.io:${NODE_PORT}
+go test -timeout 2m -failfast ./test
 ```
 
+### Deploy a New Service and Access it Externally
+
+To test, you can deploy any [application](../../apps/) in this repoitory.
+
 ## Helm Values
-To know which are the default values of the helm chart, run the command below:
+
+If you want a full list of values that you can set while installing with Helm, 
+first confirm that the Helm repo is installed:
+
+```shell
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx-controller
+```
+
+Then, show all values:
 
 ```shell
 helm show values ingress-nginx --repo https://kubernetes.github.io/ingress-nginx-controller
@@ -49,17 +58,19 @@ helm show values ingress-nginx --repo https://kubernetes.github.io/ingress-nginx
 ## Clean UP
 
 ```shell
-tofu -chdir=terraform destroy
+tofu -chdir="${INGRESS_DIR}" destroy
 
 minikube delete
 ```
 
 ## Reference
+
 1. [ingress-nginx Doc](https://github.com/kubernetes/ingress-nginx/blob/main/docs/deploy/index.md#quick-start)
 2. [ingress-nginx chart doc](https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx#ingress-nginx)
-3. [terraform helm provider](https://registry.terraform.io/providers/hashicorp/helm/latest)
+3. [Ingress-nginx Controller site](https://kubernetes.github.io/ingress-nginx/)
+4. [terraform helm provider](https://registry.terraform.io/providers/hashicorp/helm/latest)
     1. [helm_relase resource](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) 
-4. [terraform kubernetes provider](https://registry.terraform.io/providers/hashicorp/kubernetes/latest)
 5. [K0S Project nginx ingress controller](https://docs.k0sproject.io/stable/examples/nginx-ingress/)
 6. [K8S minikube page](https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/)
+7. [Test Infra with Terratest](https://github.com/gruntwork-io/terratest)
    

@@ -1,17 +1,17 @@
 # Ref.: https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx
 resource "helm_release" "ingress_nginx" {
-  name = "ingress-nginx"
+  name = var.release_name
 
   create_namespace = true
-  namespace        = "ingress-nginx"
+  namespace        = var.namespace
 
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "ingress-nginx"
 
-  # If keep the type as LoadBalancer and there isn´t a LoadBalancer
-  # The TOFU will wait forever, becouse the LB will not get an IP.
+  # Change the value of var.controler_service_type if you have
+  # a LoadBalancer configured in the cluster.
   set {
     name  = "controller.service.type"
-    value = "NodePort"
+    value = var.controler_service_type
   }
 }
