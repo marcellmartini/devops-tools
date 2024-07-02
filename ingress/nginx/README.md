@@ -72,4 +72,5 @@ minikube delete
     1. [helm_relase resource](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) 
 5. [K0S Project nginx ingress controller](https://docs.k0sproject.io/stable/examples/nginx-ingress/)
 6. [K8S minikube page](https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/)
+7. [Test Infra with Terratest](https://github.com/gruntwork-io/terratest)
    
