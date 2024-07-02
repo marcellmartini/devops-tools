@@ -17,7 +17,7 @@ some tools in [clusters](../../k8s/clusters/) directory.
 ### Install the nginx ingress
 
 ```shell
-INGRESS_DIR="./terraform/example/ingress-nginx"
+export INGRESS_DIR="./terraform/example/ingress-nginx"
 
 tofu -chdir="${INGRESS_DIR}" init
 
@@ -33,7 +33,7 @@ tofu -chdir="${INGRESS_DIR}" apply
 Run the command below:
 
 ```shell
-go test -timeout 2m -failfast ./terraform/test
+go test -timeout 2m -failfast ./test
 ```
 
 ### Deploy a new service and access it externally 
@@ -50,7 +50,7 @@ export NODE_PORT=$(kubectl get svc \
 
 export HOST_IP="$(
         kubectl get nodes -o json |
-        jq -r '.items[].status.addresses[0].address' |
+        jq -r '.items[].status.addresses[].address' |
         sort |
         head -1
 )"
