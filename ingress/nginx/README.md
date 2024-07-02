@@ -4,7 +4,7 @@
 
 1. [minikube](https://minikube.sigs.k8s.io/docs/start/)
 2. [kubectl](https://kubernetes.io/docs/tasks/tools/)
-3. [tofu](https://docs.tofu.io/)
+3. [tofu](https://opentofu.org/docs/intro/install/)
 4. [jq](https://stedolan.github.io/jq/download/)
 
 ## Install
