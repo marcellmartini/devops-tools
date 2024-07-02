@@ -2,17 +2,17 @@
 
 ## Required Commands
 
-1. minikube
-2. kubectl
-3. tofu
-4. jq
+1. [minikube](https://minikube.sigs.k8s.io/docs/start/)
+2. [kubectl](https://kubernetes.io/docs/tasks/tools/)
+3. [tofu](https://docs.tofu.io/)
+4. [jq](https://stedolan.github.io/jq/download/)
 
 ## Install
 
 ### Create a cluster 
 
-Create a cluster k8s with any tool. You'll find docs to create a cluster with
-some tools in [clusters](../../k8s/clusters/) directory.
+Create a Kubernetes cluster using any tool. You'll find documentation to create 
+a cluster with some tools in the [clusters](../../k8s/clusters/) directory.
 
 ### Install the nginx ingress
 
@@ -36,37 +36,14 @@ Run the command below:
 go test -timeout 2m -failfast ./test
 ```
 
-### Deploy a new service and access it externally 
+### Deploy a New Service and Access it Externally
 
-Run the commands below:
-
-```shell
-export NODE_PORT=$(kubectl get svc \
-    -n ingress-nginx ingress-nginx-controller \
-    -o json |
-    jq '.spec.ports[] |
-        select(.name == "http") |
-        .nodePort')
-
-export HOST_IP="$(
-        kubectl get nodes -o json |
-        jq -r '.items[].status.addresses[].address' |
-        sort |
-        head -1
-)"
-
-sed -e "s/<cluster_ip>/${HOST_IP}/g" ./terraform/example/03-ingress.yml |
-  tee ./terraform/example/03-ingress.yml
-
-kubectl apply -f ./terraform/example
-
-curl "http://nginx.${HOST_IP}.nip.io:${NODE_PORT}"
-```
+To test, you can deploy any [application](../../apps/) in this repoitory.
 
 ## Helm Values
 
-If you want a full list of values that you can set, while installing with Helm,
-first confirm that the helm repo is installed:
+If you want a full list of values that you can set while installing with Helm, 
+first confirm that the Helm repo is installed:
 
 ```shell
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx-controller
