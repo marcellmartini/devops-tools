@@ -2,7 +2,7 @@
 name: build-push-docker-hub
 
 on:
-  push:
+  pull_request:
     paths:
       - apps/apps/go-web/src/
 
@@ -28,6 +28,5 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: .
           push: true
-          tags: user/app:latest
+          tags: marcellmartini/go-web:$GITHUB_SHA
