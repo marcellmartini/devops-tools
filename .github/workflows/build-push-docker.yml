@@ -2,6 +2,7 @@
 name: build-push-docker-hub
 
 on:
+  push:
   pull_request:
     paths:
       - apps/apps/go-web/src/
@@ -10,6 +11,16 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            marcellmartini/go-web
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=sha,prefix=
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -28,5 +39,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
+          context: apps/apps/go-web/src/
           push: true
-          tags: marcellmartini/go-web:$GITHUB_SHA
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
