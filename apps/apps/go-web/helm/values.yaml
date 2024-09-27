@@ -7,7 +7,7 @@ fqdn: goweb.192.168.49.2.nip.io
 image:
   name: go-web
   tag: 'dev'
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 service:
   type: LoadBalancer
   port: 80
