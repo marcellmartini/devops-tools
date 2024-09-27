@@ -2,10 +2,9 @@
 name: build-push-docker-hub
 
 on:
-  push:
   pull_request:
     paths:
-      - apps/apps/go-web/src/
+      - apps/apps/go-web/src/*
 
 jobs:
   docker:
