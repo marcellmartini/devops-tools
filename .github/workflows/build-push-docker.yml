@@ -2,10 +2,9 @@
 name: build-push-docker-hub
 
 on:
-  push:
   pull_request:
     paths:
-      - apps/apps/go-web/src/
+      - apps/apps/go-web/src/*
 
 jobs:
   docker:
@@ -20,7 +19,7 @@ jobs:
             marcellmartini/go-web
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=sha,prefix=
+            type=ref,event=pr
       - name: Checkout
         uses: actions/checkout@v4
 
