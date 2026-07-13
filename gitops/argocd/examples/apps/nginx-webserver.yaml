@@ -1,0 +1,25 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: install-nginx-webserver
+  namespace: argocd  # same namespace as argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/marcellmartini/devops-tools.git
+    targetRevision: add-argocd
+    path: apps/apps/nginx-web-server/
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:  # automatic sync options
+      - Validate=true
+      - CreateNamespace=false
+      - PrunePropagationPolicy=foregroud
+      - PruneLast=true

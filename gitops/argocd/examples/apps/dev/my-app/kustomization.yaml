@@ -1,0 +1,7 @@
+---
+namespace: dev
+images:
+  - name: marcellmartini/nginx
+    newTag: "0.1.2"
+resources:
+  - my-app-base
