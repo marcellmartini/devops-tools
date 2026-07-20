@@ -44,8 +44,18 @@ $ kubectl -n argocd get secrets argocd-initial-admin-secret -o yaml |
 O exemplo de preview environment (deploy efêmero por Pull Request) vive em:
 
 * `gitops/argocd/config/appsofapps/preview-environment.yaml` — `ApplicationSet` do ArgoCD com o gerador `pullRequest.github`. Para cada PR aberta no repo com a label `preview`, cria uma `Application`/namespace `pre-env-<branch>-<numero>` fazendo deploy do chart abaixo.
-* `apps/apps/go-web/helm/` — chart Helm da app de exemplo (`go-web`), parametrizado por `namespace` e `image.tag`.
-* `.github/workflows/build-push-docker.yml` — builda e publica `marcellmartini/go-web:pr-<numero>` no Docker Hub quando a PR toca `apps/apps/go-web/src/*`, alimentando a tag usada pelo ApplicationSet.
+* `apps/apps/go-web/helm/` — chart Helm da app de exemplo (`go-web`), parametrizado por `namespace`, `image.repository` e `image.tag`.
+* `.github/workflows/build-push-docker.yml` — builda e publica `ghcr.io/<seu-usuario>/go-web:pr-<numero>` no GitHub Container Registry quando a PR toca `apps/apps/go-web/src/*`, usando o `GITHUB_TOKEN` automático do Actions (sem secret manual) e alimentando a tag usada pelo ApplicationSet.
+
+## Rodando em um fork (oficina/workshop)
+
+Os manifests apontam por padrão para `marcellmartini/devops-tools` e `ghcr.io/marcellmartini/go-web`. Depois de dar fork, rode:
+
+```shell
+$ ./scripts/setup-fork.sh <seu-usuario-github>
+```
+
+Isso reaponta `repoURL`, o `owner` do generator do preview e a imagem do go-web para o seu fork. Revise com `git diff`, commite e dê push antes de continuar.
 
 ## Testar localmente com kind ou minikube
 
@@ -68,19 +78,19 @@ O exemplo de preview environment (deploy efêmero por Pull Request) vive em:
    $ kubectl apply -k gitops/argocd/install/
    ```
 
-4. Criar o secret do GitHub exigido pelo gerador `pullRequest` do `preview-environment.yaml`:
+4. Criar o secret do GitHub exigido pelo gerador `pullRequest` do `preview-environment.yaml` (também evita bater no rate-limit da API do GitHub sem token — 60 req/h contra o poll a cada 15s do generator):
    ```shell
    $ kubectl create secret generic github-token -n argocd \
        --from-literal=token=<PAT com escopo repo>
    ```
 
-5. Aplicar os manifests de `appsofapps` (app-of-apps + go-web + preview ApplicationSet):
+5. Bootstrap via app-of-apps — aplica só o app-of-apps, que descobre e sincroniza sozinho `go-web-application` e `preview-environment`:
    ```shell
-   $ kubectl apply -f gitops/argocd/config/appsofapps/
+   $ kubectl apply -f gitops/argocd/config/appsofapps/appsofapps.yaml
    ```
-   > Nota: `appsofapps.yaml` ainda aponta `spec.source.path: apps/apps/`, mas `go-web-application.yaml` e `preview-environment.yaml` vivem em `gitops/argocd/config/appsofapps/` — o app-of-apps não vai (re)descobrir esses dois sozinho enquanto esse `path` não for atualizado. Por isso o `apply -f` no diretório inteiro, aplicando os três manifests diretamente.
 
-6. Disparar uma preview: abrir uma PR no GitHub com a label `preview` alterando `apps/apps/go-web/src/*`. O workflow builda a imagem `pr-<numero>` e, em até 15s, o `ApplicationSet` cria a `Application`/namespace `pre-env-<branch>-<numero>`.
+6. Disparar uma preview: abrir uma PR real no GitHub (no seu fork) com a label `preview` alterando `apps/apps/go-web/src/*`. O workflow builda e publica `ghcr.io/<seu-usuario>/go-web:pr-<numero>` e, em até 15s, o `ApplicationSet` cria a `Application`/namespace `pre-env-<branch>-<numero>`.
+   > Nota: pacotes do GHCR nascem privados. Depois do primeiro push da imagem, torne o pacote `go-web` público em `github.com/<seu-usuario>?tab=packages` → pacote `go-web` → Package settings → Change visibility, senão o cluster não consegue puxar a imagem (`ImagePullBackOff`).
 
 7. Observar:
    ```shell
