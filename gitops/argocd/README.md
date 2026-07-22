@@ -68,8 +68,9 @@ Isso reaponta `repoURL`, o `owner` do generator do preview e a imagem do go-web 
    $ minikube start --driver=docker --nodes 4
    ```
 
-2. Instalar o MetalLB (necessário no kind para simular `LoadBalancer`; no minikube prefira `minikube tunnel`):
+2. Instalar o MetalLB (necessário no kind para simular `LoadBalancer`; no minikube prefira `minikube tunnel`). A rede docker do kind é alocada dinamicamente, então gere o pool de IPs antes de aplicar:
    ```shell
+   $ ./scripts/setup-metallb-pool.sh
    $ kubectl apply -k k8s/metallb/
    ```
 
