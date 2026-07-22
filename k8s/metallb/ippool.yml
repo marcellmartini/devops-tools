@@ -1,0 +1,12 @@
+---
+# Placeholder: rode ./scripts/setup-metallb-pool.sh antes de aplicar. Ele
+# regenera este arquivo com a subnet real da rede docker do seu cluster
+# (kind aloca essa rede dinamicamente, o range abaixo não é confiável).
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: first-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    - 192.168.49.128/25

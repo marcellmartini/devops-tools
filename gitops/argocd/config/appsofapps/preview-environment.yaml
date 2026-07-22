@@ -1,0 +1,53 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: preview-environment
+  namespace: argocd  # same namespace as argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - pullRequest:
+        github:
+          # The GitHub organization or user.
+          owner: marcellmartini
+          # The Github repository
+          repo: devops-tools
+          # For GitHub Enterprise (optional)
+          # api: https://git.example.com/
+          # Reference to a Secret containing an access token. (optional)
+          tokenRef:
+            secretName: github-token
+            key: token
+          # (optional) use a GitHub App to access the API instead of a PAT.
+          # appSecretName: github-app-repo-creds
+          # Labels is used to filter the PRs that you want to target. (optional)
+          labels:
+            - preview
+        requeueAfterSeconds: 15
+  template:
+    metadata:
+      name: 'pre-env-{{.branch}}-{{.number}}'
+    spec:
+      source:
+        repoURL: 'https://github.com/marcellmartini/devops-tools.git'
+        targetRevision: '{{.head_sha}}'
+        path: apps/apps/go-web/helm/
+        helm:
+          parameters:
+            - name: "image.tag"
+              value: 'pr-{{.number}}'
+            - name: "namespace"
+              value: 'pre-env-{{.branch}}-{{.number}}'
+      project: default
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: 'pre-env-{{.branch}}-{{.number}}'

@@ -6,10 +6,11 @@ namespace: dev
 fqdn: goweb.192.168.49.2.nip.io
 image:
   name: go-web
+  repository: ghcr.io/marcellmartini/go-web
   tag: 'dev'
   pullPolicy: Always
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 80
   targetPort: 8080
   portName: http
