@@ -8,7 +8,6 @@ spec:
   project: default
   source:
     repoURL: https://github.com/marcellmartini/devops-tools.git
-    targetRevision: add-argocd
     path: apps/apps/nginx-web-server/
   destination:
     server: https://kubernetes.default.svc
