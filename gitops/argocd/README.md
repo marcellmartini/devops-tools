@@ -1,3 +1,7 @@
+> Para o passo a passo comentado da oficina (conceitos + prática), veja o
+> [WORKSHOP.md](./WORKSHOP.md). Este arquivo é a referência rápida, só com
+> comandos.
+
 # Software needed
 
 * kubectl
@@ -97,7 +101,7 @@ Isso reaponta `repoURL`, o `owner` do generator do preview e a imagem do go-web 
    ```shell
    $ kubectl get applications -n argocd
    $ kubectl get ns | grep pre-env-
-   $ kubectl port-forward svc/go-web-app -n pre-env-<branch>-<numero> 8080:80
+   $ kubectl port-forward svc/go-web-service -n pre-env-<branch>-<numero> 8080:80
    ```
 
 **Limitação:** o gerador é `pullRequest.github`, então exige uma PR real no repositório do GitHub — hoje não há um gerador local/`list` equivalente para testar 100% offline.
