@@ -20,7 +20,15 @@ if ! docker network inspect "$NETWORK" >/dev/null 2>&1; then
   exit 1
 fi
 
-SUBNET="$(docker network inspect "$NETWORK" -f '{{ (index .IPAM.Config 0).Subnet }}')"
+SUBNET="$(docker network inspect "$NETWORK" \
+    -f '{{range .IPAM.Config}}{{.Subnet}}{{"\n"}}{{end}}' \
+    | grep -E '^[0-9]+\.[0-9]+\.' | head -n1)"
+
+if [ -z "$SUBNET" ]; then
+  echo "Não encontrei subnet IPv4 na rede docker '$NETWORK' (rede dual-stack ou IPv6-only?)." >&2
+  exit 1
+fi
+
 IFS='.' read -r OCT1 OCT2 _ <<< "$SUBNET"
 
 RANGE="${OCT1}.${OCT2}.255.200-${OCT1}.${OCT2}.255.250"
