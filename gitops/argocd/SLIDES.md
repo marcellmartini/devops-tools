@@ -491,7 +491,7 @@ preview.
 $ kubectl get applications -n argocd
 $ kubectl get ns | grep pre-env-
 $ kubectl port-forward svc/go-web-service \
-    -n pre-env-<branch>-<numero> 8081:80
+    -n pre-env-<branch>-<numero> 8082:80
 ```
 
 <!-- pause -->
