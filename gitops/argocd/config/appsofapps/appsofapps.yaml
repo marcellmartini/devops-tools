@@ -10,7 +10,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/marcellmartini/devops-tools.git
+    repoURL: https://github.com/andre-sb/devops-tools.git
     path: gitops/argocd/config/appsofapps/
   destination:
     server: https://kubernetes.default.svc
