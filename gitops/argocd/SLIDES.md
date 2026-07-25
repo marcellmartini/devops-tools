@@ -265,16 +265,16 @@ template:
       helm:
         parameters:
           - name: "image.tag"
-            value: 'pr-{{.number}}-{{.head_short_sha}}'
+            value: 'pr-{{.number}}-{{ .head_sha | trunc 8 }}'
 ```
 
 <!-- pause -->
 
 - namespace **próprio**: `pre-env-<branch-slug>-<numero>`
 - lê o chart **do commit exato** da PR (`head_sha`, não do branch)
-- imagem: inclui `head_short_sha`, não só `pr-<numero>` — precisa mudar a
-  cada commit, senão não há diff pro ArgoCD sincronizar e o pod antigo
-  continua no ar
+- imagem: inclui `head_sha` truncado em 8 chars, não só `pr-<numero>` —
+  precisa mudar a cada commit, senão não há diff pro ArgoCD sincronizar e o
+  pod antigo continua no ar
 
 <!-- end_slide -->
 
@@ -511,7 +511,7 @@ Problemas comuns
 | Preview não aparece | falta a label `preview`, ou `github-token` errado/ausente |
 | `LoadBalancer` sem `EXTERNAL-IP` (kind) | pool do MetalLB desatualizado — rode `setup-metallb-pool.sh` de novo |
 | `ImagePullBackOff` na preview | imagem `head-short-sha` ainda buildando |
-| Novo commit não muda o app | `image.tag` deve incluir `{{.head_short_sha}}`, não só `pr-{{.number}}` |
+| Novo commit não muda o app | `image.tag` deve incluir `{{ .head_sha \| trunc 8 }}`, não só `pr-{{.number}}` |
 
 <!-- end_slide -->
 
