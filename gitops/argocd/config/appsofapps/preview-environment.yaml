@@ -38,8 +38,12 @@ spec:
         path: apps/apps/go-web/helm/
         helm:
           parameters:
+            # inclui head_short_sha (não só pr-{{.number}}) — a tag precisa
+            # mudar a cada commit da PR, senão o Deployment não tem diff
+            # nenhum pra sincronizar e o pod antigo continua rodando a
+            # imagem antiga mesmo com uma nova publicada sob a mesma tag.
             - name: "image.tag"
-              value: 'pr-{{.number}}'
+              value: 'pr-{{.number}}-{{.head_short_sha}}'
             - name: "namespace"
               value: 'pre-env-{{.branch_slug}}-{{.number}}'
       project: default

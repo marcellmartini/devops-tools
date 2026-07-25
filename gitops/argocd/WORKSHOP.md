@@ -158,10 +158,12 @@ Duas GitHub Actions cuidam de publicar a imagem do `go-web`, ambas usando o
 GitHub Container Registry (`ghcr.io`) com o `GITHUB_TOKEN` automático do
 Actions — **nenhum secret manual precisa ser criado por você**:
 
-* `.github/workflows/build-push-docker.yml` — dispara em `pull_request` que
-  toca `apps/apps/go-web/src/*`. Publica
-  `ghcr.io/<seu-usuario>/go-web:pr-<numero>`. É esse workflow que alimenta os
-  preview environments.
+* `.github/workflows/build-push-docker.yml` — dispara quando a PR tem a
+  label `preview` e toca `apps/apps/go-web/src/*`. Publica duas tags:
+  `ghcr.io/<seu-usuario>/go-web:pr-<numero>` (flutuante, só conveniência) e
+  `ghcr.io/<seu-usuario>/go-web:pr-<numero>-<head-short-sha>` — essa
+  segunda, imutável por commit, é a que alimenta os preview environments de
+  verdade (seção 1.8 explica por quê).
 * `.github/workflows/main-build.yml` — dispara em `push` para `main`.
   Publica `ghcr.io/<seu-usuario>/go-web:dev`, a tag usada pelo deploy
   permanente (`go-web-application.yaml`).
@@ -191,7 +193,7 @@ generators:
       requeueAfterSeconds: 15
 template:
   metadata:
-    name: 'pre-env-{{.branch}}-{{.number}}'
+    name: 'pre-env-{{.branch_slug}}-{{.number}}'
   spec:
     source:
       repoURL: 'https://github.com/marcellmartini/devops-tools.git'
@@ -200,9 +202,9 @@ template:
       helm:
         parameters:
           - name: "image.tag"
-            value: 'pr-{{.number}}'
+            value: 'pr-{{.number}}-{{.head_short_sha}}'
           - name: "namespace"
-            value: 'pre-env-{{.branch}}-{{.number}}'
+            value: 'pre-env-{{.branch_slug}}-{{.number}}'
     syncPolicy:
       automated:
         prune: true
@@ -216,15 +218,18 @@ O que acontece, passo a passo:
 1. A cada **15 segundos** (`requeueAfterSeconds`), o generator consulta a API
    do GitHub perguntando: "quais PRs abertas em `owner/repo` têm a label
    `preview`?"
-2. Para cada PR encontrada, ele expõe variáveis (`{{.branch}}`, `{{.number}}`,
-   `{{.head_sha}}`) que o `template` usa para gerar uma `Application` única:
-   nome `pre-env-<branch>-<numero>`, deployada no **namespace próprio**
-   `pre-env-<branch>-<numero>` (`CreateNamespace=true` cria o namespace na
-   hora), com a imagem `pr-<numero>` (a mesma tag que
-   `build-push-docker.yml` acabou de publicar) e o chart lido **exatamente do
-   commit da PR** (`targetRevision: '{{.head_sha}}'` — não do branch, do SHA
-   exato, então mudanças posteriores na PR só entram quando o generator
-   detectar o novo `head_sha`).
+2. Para cada PR encontrada, ele expõe variáveis (`{{.branch_slug}}`,
+   `{{.number}}`, `{{.head_sha}}`, `{{.head_short_sha}}`) que o `template`
+   usa para gerar uma `Application` única: nome
+   `pre-env-<branch-slug>-<numero>`, deployada no **namespace próprio**
+   `pre-env-<branch-slug>-<numero>` (`CreateNamespace=true` cria o
+   namespace na hora), com a imagem `pr-<numero>-<head-short-sha>` e o chart lido
+   **exatamente do commit da PR** (`targetRevision: '{{.head_sha}}'` — não
+   do branch, do SHA exato). Repare que `image.tag` inclui `{{.head_short_sha}}`,
+   não só `pr-{{.number}}`: a tag precisa mudar a cada commit, senão o
+   `Deployment` renderizado fica idêntico entre um push e outro — sem diff,
+   o ArgoCD não dispara rollout nenhum, e o pod antigo continua no ar mesmo
+   com uma imagem nova publicada sob a mesma tag.
 3. Quando a PR **fecha** (ou perde a label `preview`), ela some da resposta da
    API na próxima consulta. O `ApplicationSet` então remove a `Application`
    correspondente — e como ela tinha `prune: true`, o ArgoCD deleta todos os
@@ -350,20 +355,27 @@ muda — diferente da preview environment isolada por PR do próximo passo.
    texto retornado), e abra uma Pull Request no seu fork.
 2. Adicione a label `preview` na PR.
 3. O `build-push-docker.yml` builda e publica
-   `ghcr.io/<seu-usuario>/go-web:pr-<numero>` — acompanhe em *Actions* na
-   sua PR.
+   `ghcr.io/<seu-usuario>/go-web:pr-<numero>-<head-short-sha>` (e também
+   `pr-<numero>` sozinho, tag flutuante só de conveniência) — acompanhe em
+   *Actions* na sua PR.
 4. Em até 15s depois da imagem publicada, o `ApplicationSet` cria a
-   `Application`/namespace `pre-env-<branch>-<numero>`:
+   `Application`/namespace `pre-env-<branch-slug>-<numero>`:
 
    ```shell
    $ kubectl get applications -n argocd
    $ kubectl get ns | grep pre-env-
-   $ kubectl port-forward svc/go-web-service -n pre-env-<branch>-<numero> 8082:80
+   $ kubectl port-forward svc/go-web-service -n pre-env-<branch-slug>-<numero> 8082:80
    ```
 
    Acesse `http://localhost:8082` — é o seu ambiente efêmero, isolado, criado
    só para essa PR.
-5. Feche a PR (ou remova a label `preview`) e observe: em até 15s a
+5. Dê mais um commit na PR (ex.: mude o texto de novo) e repita o passo 4:
+   em até 15s a `Application` mostra uma nova `targetRevision` **e** um
+   `image.tag` novo (o `head_short_sha` mudou), então dessa vez o
+   `Deployment` sofre um rollout de verdade — sem isso, a tag ficaria
+   presa em `pr-<numero>` e o pod antigo continuaria de pé mesmo com uma
+   imagem nova publicada.
+6. Feche a PR (ou remova a label `preview`) e observe: em até 15s a
    `Application` e o namespace inteiro somem sozinhos.
 
 ## 2.9 Problemas comuns
@@ -373,4 +385,5 @@ muda — diferente da preview environment isolada por PR do próximo passo.
 | `go-web-app` em `ImagePullBackOff`       | Tag `dev` não publicada ainda (dê um push em `main`) ou pacote GHCR privado (seção 1.7)                                  |
 | Preview não aparece após abrir a PR      | Falta a label `preview`, ou o `github-token` está errado/ausente (rate limit — seção 1.8)                                |
 | `LoadBalancer` sem `EXTERNAL-IP` no kind | Pool do MetalLB desatualizado — rode `./scripts/setup-metallb-pool.sh` de novo (a subnet muda se você recriar o cluster) |
-| `ImagePullBackOff` na preview            | Imagem `pr-<numero>` ainda buildando — confira a aba *Actions* da PR                                                     |
+| `ImagePullBackOff` na preview            | Imagem `pr-<numero>-<head-short-sha>` ainda buildando — confira a aba *Actions* da PR                                    |
+| Novo commit na PR não muda o app rodando | `image.tag` não mudou — confira se o ApplicationSet inclui `{{.head_short_sha}}` e não só `pr-{{.number}}` (seção 1.8)   |

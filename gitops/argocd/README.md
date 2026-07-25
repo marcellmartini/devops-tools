@@ -47,9 +47,9 @@ $ kubectl -n argocd get secrets argocd-initial-admin-secret -o yaml |
 
 O exemplo de preview environment (deploy efêmero por Pull Request) vive em:
 
-* `gitops/argocd/config/appsofapps/preview-environment.yaml` — `ApplicationSet` do ArgoCD com o gerador `pullRequest.github`. Para cada PR aberta no repo com a label `preview`, cria uma `Application`/namespace `pre-env-<branch>-<numero>` fazendo deploy do chart abaixo.
+* `gitops/argocd/config/appsofapps/preview-environment.yaml` — `ApplicationSet` do ArgoCD com o gerador `pullRequest.github`. Para cada PR aberta no repo com a label `preview`, cria uma `Application`/namespace `pre-env-<branch-slug>-<numero>` fazendo deploy do chart abaixo.
 * `apps/apps/go-web/helm/` — chart Helm da app de exemplo (`go-web`), parametrizado por `namespace`, `image.repository` e `image.tag`.
-* `.github/workflows/build-push-docker.yml` — builda e publica `ghcr.io/<seu-usuario>/go-web:pr-<numero>` no GitHub Container Registry quando a PR toca `apps/apps/go-web/src/*`, usando o `GITHUB_TOKEN` automático do Actions (sem secret manual) e alimentando a tag usada pelo ApplicationSet.
+* `.github/workflows/build-push-docker.yml` — builda e publica `ghcr.io/<seu-usuario>/go-web:pr-<numero>-<head-short-sha>` (mais `pr-<numero>` sozinho, tag flutuante só de conveniência) no GitHub Container Registry quando a PR com a label `preview` toca `apps/apps/go-web/src/*`, usando o `GITHUB_TOKEN` automático do Actions (sem secret manual). É a tag por commit que o `ApplicationSet` usa — precisa mudar a cada push, senão o `Deployment` não tem diff pra sincronizar e o pod antigo continua no ar.
 
 ## Rodando em um fork (oficina/workshop)
 
