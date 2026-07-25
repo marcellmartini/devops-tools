@@ -202,7 +202,7 @@ template:
       helm:
         parameters:
           - name: "image.tag"
-            value: 'pr-{{.number}}-{{.head_short_sha}}'
+            value: 'pr-{{.number}}-{{ .head_sha | trunc 8 }}'
           - name: "namespace"
             value: 'pre-env-{{.branch_slug}}-{{.number}}'
     syncPolicy:
@@ -219,13 +219,13 @@ O que acontece, passo a passo:
    do GitHub perguntando: "quais PRs abertas em `owner/repo` têm a label
    `preview`?"
 2. Para cada PR encontrada, ele expõe variáveis (`{{.branch_slug}}`,
-   `{{.number}}`, `{{.head_sha}}`, `{{.head_short_sha}}`) que o `template`
+   `{{.number}}`, `{{.head_sha}}`) que o `template`
    usa para gerar uma `Application` única: nome
    `pre-env-<branch-slug>-<numero>`, deployada no **namespace próprio**
    `pre-env-<branch-slug>-<numero>` (`CreateNamespace=true` cria o
    namespace na hora), com a imagem `pr-<numero>-<head-short-sha>` e o chart lido
    **exatamente do commit da PR** (`targetRevision: '{{.head_sha}}'` — não
-   do branch, do SHA exato). Repare que `image.tag` inclui `{{.head_short_sha}}`,
+   do branch, do SHA exato). Repare que `image.tag` inclui `{{ .head_sha | trunc 8 }}`,
    não só `pr-{{.number}}`: a tag precisa mudar a cada commit, senão o
    `Deployment` renderizado fica idêntico entre um push e outro — sem diff,
    o ArgoCD não dispara rollout nenhum, e o pod antigo continua no ar mesmo
@@ -371,7 +371,7 @@ muda — diferente da preview environment isolada por PR do próximo passo.
    só para essa PR.
 5. Dê mais um commit na PR (ex.: mude o texto de novo) e repita o passo 4:
    em até 15s a `Application` mostra uma nova `targetRevision` **e** um
-   `image.tag` novo (o `head_short_sha` mudou), então dessa vez o
+   `image.tag` novo (os 8 primeiros chars do `head_sha` mudaram), então dessa vez o
    `Deployment` sofre um rollout de verdade — sem isso, a tag ficaria
    presa em `pr-<numero>` e o pod antigo continuaria de pé mesmo com uma
    imagem nova publicada.
@@ -386,4 +386,4 @@ muda — diferente da preview environment isolada por PR do próximo passo.
 | Preview não aparece após abrir a PR      | Falta a label `preview`, ou o `github-token` está errado/ausente (rate limit — seção 1.8)                                |
 | `LoadBalancer` sem `EXTERNAL-IP` no kind | Pool do MetalLB desatualizado — rode `./scripts/setup-metallb-pool.sh` de novo (a subnet muda se você recriar o cluster) |
 | `ImagePullBackOff` na preview            | Imagem `pr-<numero>-<head-short-sha>` ainda buildando — confira a aba *Actions* da PR                                    |
-| Novo commit na PR não muda o app rodando | `image.tag` não mudou — confira se o ApplicationSet inclui `{{.head_short_sha}}` e não só `pr-{{.number}}` (seção 1.8)   |
+| Novo commit na PR não muda o app rodando | `image.tag` não mudou — confira se o ApplicationSet inclui `{{ .head_sha \| trunc 8 }}` e não só `pr-{{.number}}` (seção 1.8) |

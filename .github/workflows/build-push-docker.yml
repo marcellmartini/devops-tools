@@ -19,10 +19,11 @@ jobs:
       - name: PR head short SHA
         id: head_sha
         # github.sha, no evento pull_request, é o merge commit sintético
-        # (refs/pull/N/merge), não o commit real da PR — e não bate com
-        # {{.head_short_sha}} que o ApplicationSet usa como image.tag.
-        # Calcula a partir do commit real da PR pra manter os dois em sincronia.
-        run: echo "short=$(echo '${{ github.event.pull_request.head.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
+        # (refs/pull/N/merge), não o commit real da PR. Calcula a partir
+        # do commit real da PR (8 primeiros chars) pra bater exatamente
+        # com {{ .head_sha | trunc 8 }} usado pelo ApplicationSet — os
+        # dois truncam o mesmo head_sha, então nunca divergem.
+        run: echo "short=$(echo '${{ github.event.pull_request.head.sha }}' | cut -c1-8)" >> "$GITHUB_OUTPUT"
 
       - name: Docker meta
         id: meta
@@ -34,8 +35,8 @@ jobs:
           # pr-<numero>: tag "flutuante", conveniente pra debug manual.
           # pr-<numero>-<short-sha>: tag imutável por commit, com o número
           # da PR ainda legível — é essa que o ApplicationSet usa
-          # (image.tag: 'pr-{{.number}}-{{.head_short_sha}}'), pra cada
-          # push na PR gerar uma tag nova e disparar rollout.
+          # (image.tag: 'pr-{{.number}}-{{ .head_sha | trunc 8 }}'), pra
+          # cada push na PR gerar uma tag nova e disparar rollout.
           tags: |
             type=ref,event=pr
             type=raw,value=pr-${{ github.event.number }}-${{ steps.head_sha.outputs.short }}
