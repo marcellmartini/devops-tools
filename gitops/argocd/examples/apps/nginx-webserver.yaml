@@ -7,7 +7,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/marcellmartini/devops-tools.git
+    repoURL: https://github.com/adilson-tavares/devops-tools.git
     path: apps/apps/nginx-web-server/
   destination:
     server: https://kubernetes.default.svc
