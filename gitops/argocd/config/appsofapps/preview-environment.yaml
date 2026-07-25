@@ -38,12 +38,14 @@ spec:
         path: apps/apps/go-web/helm/
         helm:
           parameters:
-            # inclui head_short_sha (não só pr-{{.number}}) — a tag precisa
-            # mudar a cada commit da PR, senão o Deployment não tem diff
-            # nenhum pra sincronizar e o pod antigo continua rodando a
-            # imagem antiga mesmo com uma nova publicada sob a mesma tag.
+            # head_sha truncado em 8 (via sprig trunc, disponível com
+            # goTemplate: true) — nem head_short_sha (abreviação de
+            # tamanho variável do git) nem head_short_sha_7 (fixo em 7)
+            # batiam com os 8 primeiros chars que o CI usa (cut -c1-8).
+            # Truncar o mesmo head_sha nos dois lados garante que nunca
+            # divergem.
             - name: "image.tag"
-              value: 'pr-{{.number}}-{{.head_short_sha}}'
+              value: 'pr-{{.number}}-{{ .head_sha | trunc 8 }}'
             - name: "namespace"
               value: 'pre-env-{{.branch_slug}}-{{.number}}'
       project: default
