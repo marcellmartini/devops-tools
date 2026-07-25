@@ -3,6 +3,7 @@ name: build-push-ghcr
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled]
     paths:
       - apps/apps/go-web/src/*
 
@@ -12,6 +13,7 @@ permissions:
 
 jobs:
   docker:
+    if: contains(github.event.pull_request.labels.*.name, 'preview')
     runs-on: ubuntu-latest
     steps:
       - name: Docker meta

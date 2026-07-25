@@ -28,7 +28,9 @@ spec:
         requeueAfterSeconds: 15
   template:
     metadata:
-      name: 'pre-env-{{.branch}}-{{.number}}'
+      # branch_slug (não branch) — nomes de branch podem ter "/" (ex.:
+      # "feat/teste"), inválido em nomes de recurso Kubernetes.
+      name: 'pre-env-{{.branch_slug}}-{{.number}}'
     spec:
       source:
         repoURL: 'https://github.com/marcellmartini/devops-tools.git'
@@ -39,7 +41,7 @@ spec:
             - name: "image.tag"
               value: 'pr-{{.number}}'
             - name: "namespace"
-              value: 'pre-env-{{.branch}}-{{.number}}'
+              value: 'pre-env-{{.branch_slug}}-{{.number}}'
       project: default
       syncPolicy:
         automated:
@@ -50,4 +52,4 @@ spec:
           - CreateNamespace=true
       destination:
         server: https://kubernetes.default.svc
-        namespace: 'pre-env-{{.branch}}-{{.number}}'
+        namespace: 'pre-env-{{.branch_slug}}-{{.number}}'

@@ -97,11 +97,11 @@ Isso reaponta `repoURL`, o `owner` do generator do preview e a imagem do go-web 
 6. Disparar uma preview: abrir uma PR real no GitHub (no seu fork) com a label `preview` alterando `apps/apps/go-web/src/*`. O workflow builda e publica `ghcr.io/<seu-usuario>/go-web:pr-<numero>` e, em até 15s, o `ApplicationSet` cria a `Application`/namespace `pre-env-<branch>-<numero>`.
    > Nota: pacotes do GHCR nascem privados. Depois do primeiro push da imagem, torne o pacote `go-web` público em `github.com/<seu-usuario>?tab=packages` → pacote `go-web` → Package settings → Change visibility, senão o cluster não consegue puxar a imagem (`ImagePullBackOff`).
 
-7. Observar:
+7. Observar (porta `8082` para não colidir com o port-forward do ArgoCD em `8080`):
    ```shell
    $ kubectl get applications -n argocd
    $ kubectl get ns | grep pre-env-
-   $ kubectl port-forward svc/go-web-service -n pre-env-<branch>-<numero> 8080:80
+   $ kubectl port-forward svc/go-web-service -n pre-env-<branch>-<numero> 8082:80
    ```
 
 **Limitação:** o gerador é `pullRequest.github`, então exige uma PR real no repositório do GitHub — hoje não há um gerador local/`list` equivalente para testar 100% offline.
