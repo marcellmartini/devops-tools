@@ -176,7 +176,7 @@ image:
 O **mesmo chart**, sem mudar código, serve:
 
 - o deploy permanente (tag `dev`)
-- cada preview environment (tag `pr-<numero>`, namespace isolado)
+- cada preview environment (tag `pr-<numero>-<head-short-sha>`, namespace isolado)
 
 <!-- end_slide -->
 
@@ -210,7 +210,7 @@ automático — **nenhum secret manual**:
 
 | Workflow | Dispara em | Publica |
 |---|---|---|
-| `build-push-docker.yml` | PR tocando `go-web/src/*` | `go-web:pr-<numero>` |
+| `build-push-docker.yml` | PR com label `preview` tocando `go-web/src/*` | `go-web:pr-<numero>-<head-short-sha>` (+ `pr-<numero>`) |
 | `main-build.yml` | push em `main` | `go-web:dev` |
 
 <!-- pause -->
@@ -258,21 +258,23 @@ O template — uma `Application` por PR
 ```yaml {2|4|6|8-9}
 template:
   metadata:
-    name: 'pre-env-{{.branch}}-{{.number}}'
+    name: 'pre-env-{{.branch_slug}}-{{.number}}'
   spec:
     source:
       targetRevision: '{{.head_sha}}'
       helm:
         parameters:
           - name: "image.tag"
-            value: 'pr-{{.number}}'
+            value: 'pr-{{.number}}-{{.head_short_sha}}'
 ```
 
 <!-- pause -->
 
-- namespace **próprio**: `pre-env-<branch>-<numero>`
+- namespace **próprio**: `pre-env-<branch-slug>-<numero>`
 - lê o chart **do commit exato** da PR (`head_sha`, não do branch)
-- imagem: a mesma tag que o workflow acabou de publicar
+- imagem: inclui `head_short_sha`, não só `pr-<numero>` — precisa mudar a
+  cada commit, senão não há diff pro ArgoCD sincronizar e o pod antigo
+  continua no ar
 
 <!-- end_slide -->
 
@@ -283,10 +285,10 @@ Ciclo de vida: nasce e morre com a PR
 PR aberta + label "preview"
         │
         ▼
-  build-push-docker.yml publica go-web:pr-<N>
+  build-push-docker.yml publica go-web:pr-<n>-<sha>
         │
         ▼ (até 15s depois)
-  ApplicationSet cria Application "pre-env-<branch>-<N>"
+  ApplicationSet cria Application "pre-env-<branch-slug>-<N>"
         │  (CreateNamespace=true, prune+selfHeal)
         ▼
   namespace + deploy no ar
@@ -328,7 +330,7 @@ Arquitetura: como tudo se conecta
 ┌──────────────────┐      ┌──────────────────────┐      ┌──────────────────┐
 │      GitHub      │      │    GitHub Actions    │      │       GHCR       │
 │  fork + PR #<n>  │─────▶│     build-push-      │─────▶│      go-web      │
-│  label: preview  │      │      docker.yml      │      │     :pr-<n>      │
+│  label: preview  │      │      docker.yml      │      │  :pr-<n>-<sha>   │
 └──────────────────┘      └──────────────────────┘      └──────────────────┘
     │
     │ poll a cada 15s
@@ -339,14 +341,14 @@ Arquitetura: como tudo se conecta
 │      generator: pullRequest.github       │
 └──────────────────────────────────────────┘
     │ cria Application
-    │ (image.tag=pr-<n>)
+    │ (image.tag=pr-<n>-<sha>)
     ▼
 ═══════════════════════════════════ INFRA ══════════════════════════════════════
-┌─ cluster kind/minikube — namespace pre-env-<branch>-<numero> ────────────┐
+┌─ cluster kind/minikube — namespace pre-env-<branch-slug>-<numero> ───────┐
 │                                                                          │
 │   ┌──────────────────────────┐      ┌──────────────────────┐             │
 │   │    Deployment go-web     │      │    Service go-web    │             │
-│   │   imagem: GHCR pr-<n>    │─────▶│     (ClusterIP)      │             │
+│   │imagem: GHCR pr-<n>-<sha> │─────▶│     (ClusterIP)      │             │
 │   └──────────────────────────┘      └──────────────────────┘             │
 │                                       │ exposto via                      │
 │                                       ▼                                  │
@@ -491,7 +493,7 @@ preview.
 $ kubectl get applications -n argocd
 $ kubectl get ns | grep pre-env-
 $ kubectl port-forward svc/go-web-service \
-    -n pre-env-<branch>-<numero> 8082:80
+    -n pre-env-<branch-slug>-<numero> 8082:80
 ```
 
 <!-- pause -->
@@ -508,7 +510,8 @@ Problemas comuns
 | `go-web-app` em `ImagePullBackOff` | tag `dev` não publicada, ou pacote GHCR privado |
 | Preview não aparece | falta a label `preview`, ou `github-token` errado/ausente |
 | `LoadBalancer` sem `EXTERNAL-IP` (kind) | pool do MetalLB desatualizado — rode `setup-metallb-pool.sh` de novo |
-| `ImagePullBackOff` na preview | imagem `pr-<numero>` ainda buildando |
+| `ImagePullBackOff` na preview | imagem `head-short-sha` ainda buildando |
+| Novo commit não muda o app | `image.tag` deve incluir `{{.head_short_sha}}`, não só `pr-{{.number}}` |
 
 <!-- end_slide -->
 
