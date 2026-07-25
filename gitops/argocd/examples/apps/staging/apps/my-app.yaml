@@ -9,7 +9,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/marcellmartini/devops-tools.git
+    repoURL: https://github.com/MatheusVictor23/devops-tools.git
     targetRevision: add-gitops
     path: gitops/argocd/apps/staging/my-app
   destination:

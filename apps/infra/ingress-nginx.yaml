@@ -7,10 +7,10 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/marcellmartini/devops-tools.git
-    path: ingress/nginx/helm/
+    repoURL: https://github.com/MatheusVictor23/devops-tools.git #monitora esse git
+    path: ingress/nginx/helm/ //executa esse helm
   destination:
-    server: https://kubernetes.default.svc
+    server: https://kubernetes.default.svc #aplica o helm nesse service
   syncPolicy:
     automated:
       prune: true
