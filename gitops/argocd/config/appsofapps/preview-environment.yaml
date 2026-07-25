@@ -11,7 +11,7 @@ spec:
     - pullRequest:
         github:
           # The GitHub organization or user.
-          owner: marcellmartini
+          owner: luizhenrique3651
           # The Github repository
           repo: devops-tools
           # For GitHub Enterprise (optional)
@@ -33,7 +33,7 @@ spec:
       name: 'pre-env-{{.branch_slug}}-{{.number}}'
     spec:
       source:
-        repoURL: 'https://github.com/marcellmartini/devops-tools.git'
+        repoURL: 'https://github.com/luizhenrique3651/devops-tools.git'
         targetRevision: '{{.head_sha}}'
         path: apps/apps/go-web/helm/
         helm:

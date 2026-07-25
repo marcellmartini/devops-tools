@@ -10,7 +10,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/marcellmartini/devops-tools.git
+    repoURL: https://github.com/luizhenrique3651/devops-tools.git
     path: apps/infra/
   destination:
     server: https://kubernetes.default.svc
