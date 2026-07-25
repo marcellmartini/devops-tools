@@ -328,7 +328,23 @@ $ kubectl get applications -n argocd
 `ghcr.io/<seu-usuario>/go-web:dev` existir e estiver pública (seção 1.7) —
 publicada automaticamente na primeira vez que você der push para `main`.
 
-## 2.7 Disparar uma preview environment
+## 2.7 Acessar o `go-web-app` recém implantado
+
+O chart do `go-web` sobe no namespace `dev` (valor padrão em
+`apps/apps/go-web/helm/values.yaml`), como `Service` `ClusterIP` — sem
+`Ingress`, então o acesso é via port-forward. Use uma porta local diferente
+de `8080`: essa já está em uso pelo port-forward do ArgoCD (seção 2.4),
+que você deixou rodando em background:
+
+```shell
+$ kubectl port-forward svc/go-web-service -n dev 8081:80
+```
+
+Acesse `http://localhost:8081`. Esse é o Deployment "permanente" do
+`go-web-app` (fora do fluxo de preview), atualizado sempre que a tag `dev`
+muda — diferente da preview environment isolada por PR do próximo passo.
+
+## 2.8 Disparar uma preview environment
 
 1. Crie um branch, altere algo em `apps/apps/go-web/src/main.go` (ex.: mude o
    texto retornado), e abra uma Pull Request no seu fork.
@@ -342,15 +358,15 @@ publicada automaticamente na primeira vez que você der push para `main`.
    ```shell
    $ kubectl get applications -n argocd
    $ kubectl get ns | grep pre-env-
-   $ kubectl port-forward svc/go-web-service -n pre-env-<branch>-<numero> 8080:80
+   $ kubectl port-forward svc/go-web-service -n pre-env-<branch>-<numero> 8082:80
    ```
 
-   Acesse `http://localhost:8080` — é o seu ambiente efêmero, isolado, criado
+   Acesse `http://localhost:8082` — é o seu ambiente efêmero, isolado, criado
    só para essa PR.
 5. Feche a PR (ou remova a label `preview`) e observe: em até 15s a
    `Application` e o namespace inteiro somem sozinhos.
 
-## 2.8 Problemas comuns
+## 2.9 Problemas comuns
 
 | Sintoma                                  | Causa provável                                                                                                           |
 |------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|

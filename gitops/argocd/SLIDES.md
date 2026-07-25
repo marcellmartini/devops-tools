@@ -451,7 +451,24 @@ estiver pública.
 
 <!-- end_slide -->
 
-7. Disparar uma preview environment
+7. Acessar o `go-web-app`
+===
+
+Namespace `dev`, `Service` `ClusterIP`, sem Ingress — acesso via
+port-forward. `8080` já está em uso pelo ArgoCD (passo 4), use `8081`:
+
+```bash
+$ kubectl port-forward svc/go-web-service -n dev 8081:80
+```
+
+<!-- pause -->
+
+`http://localhost:8081` — o Deployment "permanente", fora do fluxo de
+preview.
+
+<!-- end_slide -->
+
+8. Disparar uma preview environment
 ===
 
 <!-- pause -->
@@ -474,7 +491,7 @@ estiver pública.
 $ kubectl get applications -n argocd
 $ kubectl get ns | grep pre-env-
 $ kubectl port-forward svc/go-web-service \
-    -n pre-env-<branch>-<numero> 8080:80
+    -n pre-env-<branch>-<numero> 8081:80
 ```
 
 <!-- pause -->
