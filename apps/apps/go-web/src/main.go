@@ -6,7 +6,7 @@ import (
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Texte hoje 2")
+	fmt.Fprintf(w, "Texte hoje 3")
 }
 
 func main() {
