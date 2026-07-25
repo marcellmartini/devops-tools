@@ -27,6 +27,16 @@ Ao final da oficina você vai ter:
 * `kind` ou `minikube`
 * Uma conta no GitHub e um fork deste repositório
 
+Opcionais, mas recomendados: `k9s` (navegar no cluster pelo terminal) e o CLI
+do `argocd` (login e troubleshooting sem passar pela UI).
+
+Exceto o Docker, tudo isso é instalado de uma vez, em versões fixas e sem
+`sudo`, por:
+
+```bash
+./scripts/install-deps.sh all      # veja os grupos com --list
+```
+
 ---
 
 # Parte 1 — Conceitos
