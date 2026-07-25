@@ -11,6 +11,12 @@ kind: Cluster
 # on the control-plane node.
 #
 # You probably don't need this unless you are testing Kubernetes itself.
+#
+# ipv4-only: sem isso, em hosts com IPv6 habilitado no Docker o kind cria a
+# rede docker "kind" como dual-stack, o que quebra scripts que assumem
+# subnet IPv4 (ex: scripts/setup-metallb-pool.sh).
+networking:
+  ipFamily: ipv4
 nodes:
   - role: control-plane
   - role: worker
