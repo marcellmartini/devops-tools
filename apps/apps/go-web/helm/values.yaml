@@ -6,7 +6,7 @@ namespace: dev
 fqdn: goweb.192.168.49.2.nip.io
 image:
   name: go-web
-  repository: ghcr.io/marcellmartini/go-web
+  repository: ghcr.io/frpbotero/go-web
   tag: 'dev'
   pullPolicy: Always
 service:

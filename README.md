@@ -14,6 +14,9 @@ Pre-require necessary:
 * Go 1.20 or newer
 * Docker 23.0.4 or newer
 
+Instruction to use:
+/assets/SLIDE.md
+
 # Parts of this repo
 
 ## Ingresses
